@@ -16,5 +16,6 @@ mod input_system;
 mod models;
 mod renderers;
 mod scene;
+mod shader_programs;
 mod transformations;
 mod window;
