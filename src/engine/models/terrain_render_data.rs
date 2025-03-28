@@ -11,6 +11,14 @@ impl TerrainRenderData {
         Self { vertices, indices }
     }
 
+    pub fn get_vertices(&self) -> &Vec<f32> {
+        &self.vertices
+    }
+    
+    pub fn get_indices(&self) -> &Vec<u32> {
+        &self.indices
+    }
+
     fn generate_data_from_terrain_data(terrain_data: &models::TerrainData) -> (Vec<f32>, Vec<u32>) {
         let mut vertices: Vec<f32> = Vec::new();
         let mut indices: Vec<u32> = Vec::new();
