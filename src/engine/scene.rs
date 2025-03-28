@@ -5,9 +5,9 @@ pub struct Scene {
 }
 
 impl Scene {
-    pub fn new() -> Self {
+    pub fn new(geotiff_file_path: &str) -> Self {
         Self {
-            terrain: models::Terrain::new(),
+            terrain: models::Terrain::from_geotiff_file(geotiff_file_path),
         }
     }
 }
