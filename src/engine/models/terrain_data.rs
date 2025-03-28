@@ -27,4 +27,20 @@ impl TerrainData {
             data,
         }
     }
+
+    pub fn get_rasterband(&self) -> gdal_win::raster::RasterBand<'_> {
+        self.ds.rasterband(1).unwrap()
+    }
+
+    pub fn get_size(&self) -> (usize, usize) {
+        (self.width, self.height)
+    }
+
+    pub fn get_geo_transform(&self) -> [f64; 6] {
+        self.ds.geo_transform().unwrap()
+    }
+
+    pub fn get_data(&self) -> &Vec<f64> {
+        &self.data
+    }
 }
