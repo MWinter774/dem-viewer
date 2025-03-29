@@ -1,4 +1,4 @@
-use crate::engine::{models, opengl};
+use crate::engine::{models, opengl, utils};
 
 const VERTICES_VBO_INDEX: usize = 0;
 const INDICES_VBO_INDEX: usize = 1;
@@ -6,13 +6,19 @@ const UV_VBO_INDEX: usize = 2;
 
 pub struct TerrainOpenGLObject {
     terrain_vao: opengl::VAO3Buffer,
+    terrain_texture: opengl::Texture,
 }
 
 impl TerrainOpenGLObject {
-    pub fn new(terrain_render_data: &models::TerrainRenderData) -> Self {
+    pub fn new(terrain_render_data: &models::TerrainRenderData, texture_file_path: &str) -> Self {
         let terrain_vao = opengl::VAO3Buffer::new();
         Self::load_terrain_render_data_to_terrain_vao(&terrain_vao, terrain_render_data);
-        Self { terrain_vao }
+        let terrain_texture = opengl::Texture::new();
+        Self::load_terrain_texture_to_opengl_texture_object(&terrain_texture, texture_file_path);
+        Self {
+            terrain_vao,
+            terrain_texture,
+        }
     }
 
     pub fn bind_vao(&self) {
@@ -28,6 +34,15 @@ impl TerrainOpenGLObject {
     }
     pub fn bind_uv_vbo(&self) {
         self.terrain_vao.bind_vbo_as_array_buffer(UV_VBO_INDEX);
+    }
+
+    fn load_terrain_texture_to_opengl_texture_object(
+        texture: &opengl::Texture,
+        texture_file_path: &str,
+    ) {
+        texture.bind();
+        let (texture_image_data, width, height) = utils::load_texture_image(texture_file_path);
+        texture.load_texture_image(&texture_image_data, width, height);
     }
 
     fn load_terrain_render_data_to_terrain_vao(
