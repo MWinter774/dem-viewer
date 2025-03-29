@@ -17,7 +17,7 @@ impl Terrain {
             terrain_data,
             terrain_render_data,
             terrain_opengl_object,
-            terrain_model_position_data
+            terrain_model_position_data,
         }
     }
 
@@ -29,5 +29,8 @@ impl Terrain {
     }
     pub fn get_terrain_opengl_object(&self) -> &models::TerrainOpenGLObject {
         &self.terrain_opengl_object
+    }
+    pub fn get_terrain_model_position_data(&self) -> &models::ModelPositionData {
+        &self.terrain_model_position_data
     }
 }
