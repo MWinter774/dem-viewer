@@ -35,6 +35,9 @@ impl TerrainOpenGLObject {
     pub fn bind_uv_vbo(&self) {
         self.terrain_vao.bind_vbo_as_array_buffer(UV_VBO_INDEX);
     }
+    pub fn bind_texture(&self) {
+        self.terrain_texture.bind();
+    }
 
     fn load_terrain_texture_to_opengl_texture_object(
         texture: &opengl::Texture,
