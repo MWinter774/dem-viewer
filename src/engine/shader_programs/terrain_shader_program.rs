@@ -2,20 +2,18 @@ use nalgebra_glm as glm;
 
 use crate::engine::opengl;
 
-pub struct TerrainShaderProgram<'a> {
+pub struct TerrainShaderProgram {
     shader_program: opengl::ShaderProgram,
-    vertex_attrib_pointer: opengl::VertexAttributePointer<'a, f32>,
+    vertex_attrib_pointer: opengl::VertexAttributePointer,
     mvp_uniform_variable: std::rc::Rc<opengl::UniformVariable>,
 }
 
-impl<'a> TerrainShaderProgram<'a> {
-    pub fn new(vertices: &'a Vec<f32>) -> Self {
+impl TerrainShaderProgram {
+    pub fn new() -> Self {
         let mut shader_program =
             opengl::ShaderProgram::new("shaders\\terrain_shader.vs", "shaders\\terrain_shader.fs");
-        let vertex_attrib_pointer = opengl::VertexAttributePointer::new(
-            vertices,
-            opengl::VertexAttributePointerConfig::default(),
-        );
+        let vertex_attrib_pointer =
+            opengl::VertexAttributePointer::new(opengl::VertexAttributePointerConfig::default());
         let mvp_uniform_variable =
             std::rc::Rc::clone(&shader_program.get_uniform_variable("MVP").unwrap());
         Self {
