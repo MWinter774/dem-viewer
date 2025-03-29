@@ -7,8 +7,7 @@ pub struct TerrainRenderer {
 
 impl TerrainRenderer {
     pub fn new() -> Self {
-        let terrain_shader_program =
-            shader_programs::TerrainShaderProgram::new();
+        let terrain_shader_program = shader_programs::TerrainShaderProgram::new();
         Self {
             terrain_shader_program,
         }
@@ -23,9 +22,15 @@ impl TerrainRenderer {
 
         terrain.get_terrain_opengl_object().bind_uv_vbo();
         self.terrain_shader_program.enable_uv_attrib_array();
-        
+
         self.terrain_shader_program
             .set_mvp_uniform_variable(mvp_matrix);
+
+        unsafe{
+            gl::ActiveTexture(0);
+        }
+        terrain.get_terrain_opengl_object().bind_texture();
+        self.terrain_shader_program.set_my_texture_uniform_variable(0);
 
         unsafe {
             gl::DrawElements(
