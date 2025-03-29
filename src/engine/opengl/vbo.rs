@@ -11,20 +11,19 @@ impl VBO {
         Self { vbo_index }
     }
 
-    pub fn bind_array_buffer(&self) {
+    pub fn bind_as_array_buffer(&self) {
         unsafe {
             gl::BindBuffer(gl::ARRAY_BUFFER, self.vbo_index);
         }
     }
 
-    pub fn bind_indices_buffer(&self) {
+    pub fn bind_as_element_array_buffer(&self) {
         unsafe {
             gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, self.vbo_index);
         }
     }
 
-    pub fn load_indices_data<T>(&self, data: &[T]) {
-        self.bind_indices_buffer();
+    pub fn load_data_as_element_array_buffer<T>(&self, data: &[T]) {
         unsafe {
             gl::BufferData(
                 gl::ELEMENT_ARRAY_BUFFER,
@@ -35,8 +34,7 @@ impl VBO {
         }
     }
 
-    pub fn load_vertices_data<T>(&self, data: &[T]) {
-        self.bind_array_buffer();
+    pub fn load_data_as_array_buffer<T>(&self, data: &[T]) {
         unsafe {
             gl::BufferData(
                 gl::ARRAY_BUFFER,
