@@ -1,11 +1,11 @@
-pub struct TerrainData {
+pub struct TerrainModelData {
     ds: gdal_win::Dataset,
     width: usize,
     height: usize,
     data: Vec<f64>,
 }
 
-impl TerrainData {
+impl TerrainModelData {
     pub fn from_geotiff_file(geotiff_file_path: &str) -> Self {
         let ds = gdal_win::Dataset::open(geotiff_file_path).unwrap();
         let rasterband = ds.rasterband(1).unwrap();
