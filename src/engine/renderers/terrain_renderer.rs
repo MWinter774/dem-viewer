@@ -6,7 +6,7 @@ pub struct TerrainRenderer {
 }
 
 impl TerrainRenderer {
-    pub fn new(terrain_render_data: &models::TerrainRenderData) -> Self {
+    pub fn new() -> Self {
         let terrain_shader_program =
             shader_programs::TerrainShaderProgram::new();
         Self {
