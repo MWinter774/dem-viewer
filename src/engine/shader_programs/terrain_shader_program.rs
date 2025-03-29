@@ -7,6 +7,7 @@ pub struct TerrainShaderProgram {
     vertex_attrib_pointer: opengl::VertexAttributePointer,
     uv_vertex_attrib_pointer: opengl::VertexAttributePointer,
     mvp_uniform_variable: std::rc::Rc<opengl::UniformVariable>,
+    my_texture_uniform_variable: std::rc::Rc<opengl::UniformVariable>,
 }
 
 impl TerrainShaderProgram {
@@ -18,14 +19,18 @@ impl TerrainShaderProgram {
         let mut uv_vertex_attrib_pointer_config = opengl::VertexAttributePointerConfig::default();
         uv_vertex_attrib_pointer_config.index = 1;
         uv_vertex_attrib_pointer_config.size = 2;
-        let uv_vertex_attrib_pointer = opengl::VertexAttributePointer::new(uv_vertex_attrib_pointer_config);
+        let uv_vertex_attrib_pointer =
+            opengl::VertexAttributePointer::new(uv_vertex_attrib_pointer_config);
         let mvp_uniform_variable =
             std::rc::Rc::clone(&shader_program.get_uniform_variable("MVP").unwrap());
+        let my_texture_uniform_variable =
+            std::rc::Rc::clone(&shader_program.get_uniform_variable("myTexture").unwrap());
         Self {
             shader_program,
             vertex_attrib_pointer,
             uv_vertex_attrib_pointer,
             mvp_uniform_variable,
+            my_texture_uniform_variable,
         }
     }
 
@@ -43,5 +48,10 @@ impl TerrainShaderProgram {
     pub fn set_mvp_uniform_variable(&mut self, mvp_matrix: &glm::Mat4) {
         self.shader_program
             .set_uniform_variable_matrix_4fv(&self.mvp_uniform_variable, mvp_matrix);
+    }
+
+    pub fn set_my_texture_uniform_variable(&mut self, texture_unit: i32) {
+        self.shader_program
+            .set_uniform_variable_1i(&self.mvp_uniform_variable, texture_unit);
     }
 }
