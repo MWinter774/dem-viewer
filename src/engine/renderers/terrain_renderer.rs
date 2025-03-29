@@ -14,7 +14,7 @@ impl TerrainRenderer {
         }
     }
 
-    pub fn render_terrain(&mut self, terrain: models::Terrain, mvp_matrix: &glm::Mat4) {
+    pub fn render_terrain(&mut self, terrain: &models::Terrain, mvp_matrix: &glm::Mat4) {
         self.terrain_shader_program.use_program();
         terrain.get_terrain_opengl_object().bind_vao();
         self.terrain_shader_program.enable_vertex_attrib_array();
