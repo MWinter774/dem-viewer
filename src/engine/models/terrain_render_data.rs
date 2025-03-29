@@ -6,7 +6,7 @@ pub struct TerrainRenderData {
 }
 
 impl TerrainRenderData {
-    pub fn new(terrain_data: &models::TerrainData) -> Self {
+    pub fn new(terrain_data: &models::TerrainModelData) -> Self {
         let (vertices, indices) = Self::generate_data_from_terrain_data(terrain_data);
         Self { vertices, indices }
     }
@@ -19,7 +19,7 @@ impl TerrainRenderData {
         &self.indices
     }
 
-    fn generate_data_from_terrain_data(terrain_data: &models::TerrainData) -> (Vec<f32>, Vec<u32>) {
+    fn generate_data_from_terrain_data(terrain_data: &models::TerrainModelData) -> (Vec<f32>, Vec<u32>) {
         let mut vertices: Vec<f32> = Vec::new();
         let mut indices: Vec<u32> = Vec::new();
 
