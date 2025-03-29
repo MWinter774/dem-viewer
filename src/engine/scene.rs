@@ -9,8 +9,9 @@ pub struct Scene {
 }
 
 impl Scene {
-    pub fn new(geotiff_file_path: &str) -> Self {
-        let terrain = models::Terrain::from_geotiff_file(geotiff_file_path, "textures\\grass.jpg");
+    pub fn new(geotiff_file_path: &str, terrain_texture_file_path: &str) -> Self {
+        let terrain =
+            models::Terrain::from_geotiff_file(geotiff_file_path, terrain_texture_file_path);
         let terrain_renderer = renderers::TerrainRenderer::new();
         Self {
             terrain,
