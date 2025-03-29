@@ -1,8 +1,7 @@
 use std::os::raw::c_void;
 
 /// Holds a reference for a data buffer to assign to VertexAttribPointer, only to represent an OpenGL VertexAttributePointer correctly
-pub struct VertexAttributePointer<'a, T> {
-    _data_buffer: &'a [T],
+pub struct VertexAttributePointer {
     data_config: self::VertexAttributePointerConfig,
 }
 
@@ -30,8 +29,8 @@ impl Default for VertexAttributePointerConfig {
     }
 }
 
-impl<'a, T> VertexAttributePointer<'a, T> {
-    pub fn new(data_buffer: &'a [T], data_config: self::VertexAttributePointerConfig) -> Self {
+impl VertexAttributePointer {
+    pub fn new(data_config: self::VertexAttributePointerConfig) -> Self {
         unsafe {
             gl::VertexAttribPointer(
                 data_config.index,
@@ -44,7 +43,6 @@ impl<'a, T> VertexAttributePointer<'a, T> {
         }
 
         Self {
-            _data_buffer: data_buffer,
             data_config,
         }
     }
