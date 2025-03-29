@@ -2,25 +2,37 @@ use crate::engine::models;
 
 pub struct TerrainRenderData {
     vertices: Vec<f32>,
+    uv: Vec<f32>,
     indices: Vec<u32>,
 }
 
 impl TerrainRenderData {
     pub fn new(terrain_data: &models::TerrainModelData) -> Self {
-        let (vertices, indices) = Self::generate_data_from_terrain_data(terrain_data);
-        Self { vertices, indices }
+        let (vertices, uv, indices) = Self::generate_data_from_terrain_data(terrain_data);
+        Self {
+            vertices,
+            uv,
+            indices,
+        }
     }
 
     pub fn get_vertices(&self) -> &Vec<f32> {
         &self.vertices
     }
-    
+
+    pub fn get_uv(&self) -> &Vec<f32> {
+        &self.uv
+    }
+
     pub fn get_indices(&self) -> &Vec<u32> {
         &self.indices
     }
 
-    fn generate_data_from_terrain_data(terrain_data: &models::TerrainModelData) -> (Vec<f32>, Vec<u32>) {
+    fn generate_data_from_terrain_data(
+        terrain_data: &models::TerrainModelData,
+    ) -> (Vec<f32>, Vec<f32>, Vec<u32>) {
         let mut vertices: Vec<f32> = Vec::new();
+        let mut uv: Vec<f32> = Vec::new();
         let mut indices: Vec<u32> = Vec::new();
 
         let geo_transform = terrain_data.get_geo_transform();
@@ -50,6 +62,11 @@ impl TerrainRenderData {
                 vertices.push(x);
                 vertices.push(z);
                 vertices.push(y);
+
+                let u = i as f32 / (rs_width - 1) as f32;
+                let v = j as f32 / (rs_height - 1) as f32;
+                uv.push(u);
+                uv.push(v);
             }
         }
 
@@ -72,6 +89,6 @@ impl TerrainRenderData {
             }
         }
 
-        (vertices, indices)
+        (vertices, uv, indices)
     }
 }
