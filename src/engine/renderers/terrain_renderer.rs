@@ -1,14 +1,14 @@
 use crate::engine::{models, shader_programs};
 use nalgebra_glm as glm;
 
-pub struct TerrainRenderer<'a> {
-    terrain_shader_program: shader_programs::TerrainShaderProgram<'a>,
+pub struct TerrainRenderer {
+    terrain_shader_program: shader_programs::TerrainShaderProgram,
 }
 
-impl<'a> TerrainRenderer<'a> {
-    pub fn new(terrain_render_data: &'a models::TerrainRenderData) -> Self {
+impl TerrainRenderer {
+    pub fn new(terrain_render_data: &models::TerrainRenderData) -> Self {
         let terrain_shader_program =
-            shader_programs::TerrainShaderProgram::new(terrain_render_data.get_vertices());
+            shader_programs::TerrainShaderProgram::new();
         Self {
             terrain_shader_program,
         }
