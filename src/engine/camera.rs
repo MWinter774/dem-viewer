@@ -8,6 +8,7 @@ pub struct Camera {
     front: glm::Vec3,
     up: glm::Vec3,
     view_matrix: transformations::View,
+    projection_matrix: transformations::Projection,
     step_size: f32,
     yaw: f32,
     pitch: f32,
@@ -21,6 +22,7 @@ impl Camera {
             front,
             up,
             view_matrix: transformations::View::new(&position, &(position + front), &up),
+            projection_matrix: transformations::Projection::default(),
             step_size,
             yaw: -90.0,
             pitch: 0.0,
@@ -30,6 +32,12 @@ impl Camera {
 
     pub fn get_view_matrix(&self) -> &glm::Mat4 {
         self.view_matrix.get_matrix()
+    }
+    pub fn get_projection_matrix(&self) -> &glm::Mat4 {
+        self.projection_matrix.get_matrix()
+    }
+    pub fn get_pv_matrix(&self) -> glm::Mat4 {
+        self.projection_matrix.get_matrix() * self.view_matrix.get_matrix()
     }
 
     pub fn update_input(&mut self, input_system: &engine::InputSystem, delta_time: f32) {
