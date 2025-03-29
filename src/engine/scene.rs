@@ -1,4 +1,7 @@
-use crate::engine::{models, renderers};
+use crate::{
+    engine,
+    engine::{models, renderers},
+};
 
 pub struct Scene {
     terrain: models::Terrain,
@@ -13,5 +16,16 @@ impl Scene {
             terrain,
             terrain_renderer,
         }
+    }
+
+    pub fn render(&mut self, camera: &engine::Camera) {
+        self.terrain_renderer.render_terrain(
+            &self.terrain,
+            &(camera.get_pv_matrix()
+                * self
+                    .terrain
+                    .get_terrain_model_position_data()
+                    .get_model_matrix()),
+        );
     }
 }
