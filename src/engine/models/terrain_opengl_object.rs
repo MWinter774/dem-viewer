@@ -14,6 +14,10 @@ impl TerrainOpenGLObject {
         Self { terrain_vao }
     }
 
+    pub fn bind_vao(&self) {
+        self.terrain_vao.bind_vertex_array();
+    }
+
     fn load_terrain_render_data_to_terrain_vao(
         terrain_vao: &opengl::VAO2Buffer,
         terrain_render_data: &models::TerrainRenderData,
