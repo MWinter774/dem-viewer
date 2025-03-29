@@ -1,11 +1,11 @@
 use crate::engine::opengl;
 
-pub struct VAO {
+pub struct VAO1Buffer {
     vao_index: gl::types::GLuint,
     vbo: opengl::VBO,
 }
 
-impl VAO {
+impl VAO1Buffer {
     pub fn new() -> Self {
         let mut vao_index: gl::types::GLuint = 0;
         unsafe {
@@ -25,7 +25,7 @@ impl VAO {
 
     pub fn load_array_buffer<T>(&self, data: &[T]) {
         self.bind();
-        self.vbo.bind_array_buffer();
+        self.vbo.bind_as_array_buffer();
         unsafe {
             gl::BufferData(
                 gl::ARRAY_BUFFER,
@@ -37,7 +37,7 @@ impl VAO {
     }
 }
 
-impl Drop for VAO {
+impl Drop for VAO1Buffer {
     fn drop(&mut self) {
         unsafe {
             gl::DeleteVertexArrays(1, &self.vao_index);
