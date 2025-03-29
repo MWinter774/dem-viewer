@@ -17,4 +17,14 @@ impl Terrain {
             terrain_opengl_object,
         }
     }
+
+    pub fn get_terrain_data(&self) -> &models::TerrainData {
+        &self.terrain_data
+    }
+    pub fn get_terrain_render_data(&self) -> &models::TerrainRenderData {
+        &self.terrain_render_data
+    }
+    pub fn get_terrain_opengl_object(&self) -> &models::TerrainOpenGLObject {
+        &self.terrain_opengl_object
+    }
 }
