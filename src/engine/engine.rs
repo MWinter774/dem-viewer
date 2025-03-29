@@ -23,6 +23,8 @@ impl Engine {
             gl::DepthFunc(gl::LESS);
         }
 
+        let mut scene = engine::Scene::new("DEM\\1.tif");
+
         while !window_should_close {
             // Swap the buffers of the opengl window and updates event pipeline
             let frame_data = self.context.next_frame();
@@ -33,6 +35,8 @@ impl Engine {
                 gl::Clear(gl::DEPTH_BUFFER_BIT | gl::COLOR_BUFFER_BIT);
                 gl::ClearColor(0.0, 0.0, 0.5, 0.0);
             }
+
+            scene.render(&self.camera);
 
             if frame_data
                 .input_system
