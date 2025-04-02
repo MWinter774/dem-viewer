@@ -24,13 +24,10 @@ impl TerrainRenderer {
         self.terrain_shader_program.enable_uv_attrib_array();
 
         self.terrain_shader_program
-            .set_mvp_uniform_variable(mvp_matrix);
+            .set_model_matrix_uniform_variable(&terrain.get_terrain_model_position_data().get_model_matrix());
 
-        unsafe{
-            gl::ActiveTexture(0);
-        }
-        terrain.get_terrain_opengl_object().bind_texture();
-        self.terrain_shader_program.set_my_texture_uniform_variable(0);
+        self.terrain_shader_program
+            .set_mvp_uniform_variable(mvp_matrix);
 
         unsafe {
             gl::DrawElements(
