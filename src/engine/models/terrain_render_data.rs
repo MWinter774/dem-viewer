@@ -1,40 +1,50 @@
+use std::cmp;
+
 use crate::engine::models;
 
 pub struct TerrainRenderData {
     vertices: Vec<f32>,
     uv: Vec<f32>,
     indices: Vec<u32>,
+    min_height: f32,
+    max_height: f32,
 }
 
 impl TerrainRenderData {
     pub fn new(terrain_data: &models::TerrainModelData) -> Self {
-        let (vertices, uv, indices) = Self::generate_data_from_terrain_data(terrain_data);
+        let (vertices, uv, indices, min_height, max_height) =
+            Self::generate_data_from_terrain_data(terrain_data);
         Self {
             vertices,
             uv,
             indices,
+            min_height,
+            max_height,
         }
     }
 
     pub fn get_vertices(&self) -> &Vec<f32> {
         &self.vertices
     }
-
     pub fn get_uv(&self) -> &Vec<f32> {
         &self.uv
     }
-
     pub fn get_indices(&self) -> &Vec<u32> {
         &self.indices
+    }
+    pub fn get_min_height(&self) -> f32 {
+        self.min_height
+    }
+    pub fn get_max_height(&self) -> f32 {
+        self.max_height
     }
 
     fn generate_data_from_terrain_data(
         terrain_data: &models::TerrainModelData,
-    ) -> (Vec<f32>, Vec<f32>, Vec<u32>) {
+    ) -> (Vec<f32>, Vec<f32>, Vec<u32>, f32, f32) {
         let mut vertices: Vec<f32> = Vec::new();
         let mut uv: Vec<f32> = Vec::new();
         let mut indices: Vec<u32> = Vec::new();
-
 
         let (rs_width, rs_height) = terrain_data.get_size();
 
@@ -56,6 +66,7 @@ impl TerrainRenderData {
         let (scale_x, scale_y, height_scale) = (10.0, 10.0, 1.0);
 
         let buf = terrain_data.get_data();
+        let (mut min_height, mut max_height) = (buf[0] as f32, buf[0] as f32);
 
         for j in 0..rs_height {
             for i in 0..rs_width {
@@ -65,6 +76,9 @@ impl TerrainRenderData {
                 vertices.push(x);
                 vertices.push(z);
                 vertices.push(y);
+
+                min_height = z.min(min_height);
+                max_height = z.max(max_height);
 
                 let u = i as f32 / (rs_width - 1) as f32;
                 let v = j as f32 / (rs_height - 1) as f32;
@@ -92,6 +106,6 @@ impl TerrainRenderData {
             }
         }
 
-        (vertices, uv, indices)
+        (vertices, uv, indices, min_height, max_height)
     }
 }
