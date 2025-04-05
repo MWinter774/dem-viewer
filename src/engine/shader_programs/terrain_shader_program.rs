@@ -7,7 +7,6 @@ pub struct TerrainShaderProgram {
     vertex_attrib_pointer: opengl::VertexAttributePointer,
     uv_vertex_attrib_pointer: opengl::VertexAttributePointer,
     mvp_uniform_variable: std::rc::Rc<opengl::UniformVariable>,
-    model_matrix_uniform_variable: std::rc::Rc<opengl::UniformVariable>,
     max_height_uniform_variable: std::rc::Rc<opengl::UniformVariable>,
 }
 
@@ -24,8 +23,6 @@ impl TerrainShaderProgram {
             opengl::VertexAttributePointer::new(uv_vertex_attrib_pointer_config);
         let mvp_uniform_variable =
             std::rc::Rc::clone(&shader_program.get_uniform_variable("MVP").unwrap());
-        let model_matrix_uniform_variable =
-            std::rc::Rc::clone(&shader_program.get_uniform_variable("modelMatrix").unwrap());
         let max_height_uniform_variable =
             std::rc::Rc::clone(&shader_program.get_uniform_variable("maxHeight").unwrap());
         Self {
@@ -33,7 +30,6 @@ impl TerrainShaderProgram {
             vertex_attrib_pointer,
             uv_vertex_attrib_pointer,
             mvp_uniform_variable,
-            model_matrix_uniform_variable,
             max_height_uniform_variable,
         }
     }
@@ -52,11 +48,6 @@ impl TerrainShaderProgram {
     pub fn set_mvp_uniform_variable(&mut self, mvp_matrix: &glm::Mat4) {
         self.shader_program
             .set_uniform_variable_matrix_4fv(&self.mvp_uniform_variable, mvp_matrix);
-    }
-
-    pub fn set_model_matrix_uniform_variable(&mut self, model_matrix: &glm::Mat4) {
-        self.shader_program
-            .set_uniform_variable_matrix_4fv(&self.model_matrix_uniform_variable, model_matrix);
     }
 
     pub fn set_max_height_uniform_variable(&mut self, max_height: f32) {
