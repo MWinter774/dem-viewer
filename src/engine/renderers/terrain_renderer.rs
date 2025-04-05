@@ -24,10 +24,6 @@ impl TerrainRenderer {
         self.terrain_shader_program.enable_uv_attrib_array();
 
         self.terrain_shader_program
-            .set_model_matrix_uniform_variable(
-                &terrain.get_terrain_model_position_data().get_model_matrix(),
-            );
-        self.terrain_shader_program
             .set_max_height_uniform_variable(terrain.get_terrain_render_data().get_max_height());
 
         self.terrain_shader_program
