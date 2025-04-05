@@ -35,22 +35,26 @@ impl TerrainRenderData {
         let mut uv: Vec<f32> = Vec::new();
         let mut indices: Vec<u32> = Vec::new();
 
-        let geo_transform = terrain_data.get_geo_transform();
-        let (x, y) = (geo_transform[0], geo_transform[3]);
 
         let (rs_width, rs_height) = terrain_data.get_size();
 
-        let (x_right, y_bottom) = (
-            x + (geo_transform[1] * (rs_width as f64)),
-            y + (geo_transform[5] * (rs_height as f64)),
-        );
-        let (absolute_w, absolute_h) = (x_right - x, y - y_bottom);
-        let (x_res, y_res) = (
-            absolute_w / (rs_width as f64),
-            absolute_h / (rs_height as f64),
-        );
+        // TODO: Compute scaling based on model, doesn't work well
+        // let geo_transform = terrain_data.get_geo_transform();
+        // let (x, y) = (geo_transform[0], geo_transform[3]);
+        // let (x_right, y_bottom) = (
+        //     x + (geo_transform[1] * (rs_width as f64)),
+        //     y + (geo_transform[5] * (rs_height as f64)),
+        // );
+        // let (absolute_w, absolute_h) = (x_right - x, y - y_bottom);
+        // let (x_res, y_res) = (
+        //     absolute_w / (rs_width as f64),
+        //     absolute_h / (rs_height as f64),
+        // );
+        // let (scale_x, scale_y, height_scale): (f32, f32, f32) = (x_res as f32, y_res as f32, 1.0);
 
-        let (scale_x, scale_y, height_scale): (f32, f32, f32) = (x_res as f32, y_res as f32, 1.0);
+        // Set fixed scaling
+        let (scale_x, scale_y, height_scale) = (10.0, 10.0, 1.0);
+        println!("scale_x: {} scale_y: {}", scale_x, scale_y);
 
         let buf = terrain_data.get_data();
 
