@@ -54,7 +54,6 @@ impl TerrainRenderData {
 
         // Set fixed scaling
         let (scale_x, scale_y, height_scale) = (10.0, 10.0, 1.0);
-        println!("scale_x: {} scale_y: {}", scale_x, scale_y);
 
         let buf = terrain_data.get_data();
 
