@@ -1,0 +1,48 @@
+use nalgebra_glm as glm;
+use crate::engine::opengl;
+
+pub struct PickingShaderProgram {
+    shader_program: opengl::ShaderProgram,
+    vertex_attrib_pointer: opengl::VertexAttributePointer,
+    vertex_id_attrib_pointer: opengl::VertexAttributePointer,
+    mvp_uniform_variable: std::rc::Rc<opengl::UniformVariable>,
+}
+
+impl PickingShaderProgram {
+    pub fn new() -> Self {
+        let mut shader_program =
+            opengl::ShaderProgram::new("shaders\\picking_shader.vs", "shaders\\picking_shader.fs");
+        let vertex_attrib_pointer =
+            opengl::VertexAttributePointer::new(opengl::VertexAttributePointerConfig::default());
+        let mut vertex_id_attrib_pointer_config = opengl::VertexAttributePointerConfig::default();
+        vertex_id_attrib_pointer_config.index = 1;
+        vertex_id_attrib_pointer_config.size = 1;
+        let vertex_id_attrib_pointer =
+            opengl::VertexAttributePointer::new(vertex_id_attrib_pointer_config);
+
+        let mvp_uniform_variable =
+            std::rc::Rc::clone(&shader_program.get_uniform_variable("MVP").unwrap());
+        Self {
+            shader_program,
+            vertex_attrib_pointer,
+            vertex_id_attrib_pointer,
+            mvp_uniform_variable
+        }
+    }
+
+    pub fn use_program(&self) {
+        self.shader_program.use_program();
+    }
+
+    pub fn enable_vertex_attrib_array(&self) {
+        self.vertex_attrib_pointer.enable_vertex_attrib_array();
+    }
+    pub fn enable_vertex_id_attrib_array(&self) {
+        self.vertex_id_attrib_pointer.enable_vertex_attrib_array();
+    }
+    
+    pub fn set_mvp_uniform_variable(&mut self, mvp_matrix: &glm::Mat4) {
+        self.shader_program
+            .set_uniform_variable_matrix_4fv(&self.mvp_uniform_variable, mvp_matrix);
+    }
+}
