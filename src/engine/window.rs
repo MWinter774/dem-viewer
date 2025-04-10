@@ -42,6 +42,7 @@ impl Window {
             .set_cursor_pos(self.width as f64 / 2.0, self.height as f64 / 2.0);
         self.glfw_window
             .set_cursor_pos_callback(engine::input_system::mouse::mouse_movement_callback);
+        self.glfw_window.set_mouse_button_callback(engine::input_system::mouse::mouse_button_callback);
     }
 
     pub fn swap_buffers(&mut self) {
