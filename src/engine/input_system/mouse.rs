@@ -5,6 +5,7 @@ static mut X_OFFSET: f64 = 0.0;
 static mut Y_OFFSET: f64 = 0.0;
 
 static mut MOUSE_MOVED: bool = false;
+static mut LEFT_MOUSE_BUTTON_PRESSED: bool = false;
 
 pub struct Mouse {}
 
@@ -27,6 +28,10 @@ impl Mouse {
     pub fn is_moved(&self) -> bool {
         unsafe { MOUSE_MOVED }
     }
+
+    pub fn is_left_mouse_button_pressed(&self) -> bool {
+        unsafe { LEFT_MOUSE_BUTTON_PRESSED }
+    }
 }
 
 pub fn mouse_movement_callback(_: &mut glfw::Window, xpos: f64, ypos: f64) {
@@ -36,5 +41,18 @@ pub fn mouse_movement_callback(_: &mut glfw::Window, xpos: f64, ypos: f64) {
         Y_OFFSET = LAST_Y - ypos;
         LAST_X = xpos;
         LAST_Y = ypos;
+    }
+}
+
+pub fn mouse_button_callback(
+    _: &mut glfw::Window,
+    mouse_button: glfw::MouseButton,
+    action: glfw::Action,
+    modifiers: glfw::Modifiers,
+) {
+    if mouse_button == glfw::MouseButtonLeft {
+        unsafe {
+            LEFT_MOUSE_BUTTON_PRESSED = action == glfw::Action::Press;
+        }
     }
 }
