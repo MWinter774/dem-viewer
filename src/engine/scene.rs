@@ -1,3 +1,5 @@
+use nalgebra_glm as glm;
+
 use crate::{
     engine,
     engine::{models, renderers},
@@ -42,5 +44,24 @@ impl Scene {
                     .get_terrain_model_position_data()
                     .get_model_matrix()),
         );
+    }
+
+    pub fn read_color_under_mouse(&self) -> glm::U8Vec4 {
+        let mut color: glm::U8Vec4 = glm::U8Vec4::new_random();
+        unsafe {
+            gl::Flush();
+            gl::Finish();
+            gl::PixelStorei(gl::UNPACK_ALIGNMENT, 1);
+            gl::ReadPixels(
+                400,
+                300,
+                1,
+                1,
+                gl::RGBA,
+                gl::UNSIGNED_BYTE,
+                color.as_mut_ptr().cast(),
+            );
+        }
+        color
     }
 }
