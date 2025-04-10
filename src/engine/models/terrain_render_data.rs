@@ -4,7 +4,7 @@ use crate::engine::models;
 
 pub struct TerrainRenderData {
     vertices: Vec<f32>,
-    vertices_ids: Vec<usize>,
+    vertices_ids: Vec<u32>,
     uv: Vec<f32>,
     indices: Vec<u32>,
     min_height: f32,
@@ -28,7 +28,7 @@ impl TerrainRenderData {
     pub fn get_vertices(&self) -> &Vec<f32> {
         &self.vertices
     }
-    pub fn get_vertices_ids(&self) -> &Vec<usize> {
+    pub fn get_vertices_ids(&self) -> &Vec<u32> {
         &self.vertices_ids
     }
     pub fn get_uv(&self) -> &Vec<f32> {
@@ -46,9 +46,9 @@ impl TerrainRenderData {
 
     fn generate_data_from_terrain_data(
         terrain_data: &models::TerrainModelData,
-    ) -> (Vec<f32>, Vec<usize>, Vec<f32>, Vec<u32>, f32, f32) {
+    ) -> (Vec<f32>, Vec<u32>, Vec<f32>, Vec<u32>, f32, f32) {
         let mut vertices: Vec<f32> = Vec::new();
-        let mut vertices_ids: Vec<usize> = Vec::new();
+        let mut vertices_ids: Vec<u32> = Vec::new();
         let mut uv: Vec<f32> = Vec::new();
         let mut indices: Vec<u32> = Vec::new();
 
@@ -83,7 +83,7 @@ impl TerrainRenderData {
                 vertices.push(z);
                 vertices.push(y);
 
-                vertices_ids.push(j * rs_width + i);
+                vertices_ids.push((j * rs_width + i) as u32);
 
                 min_height = z.min(min_height);
                 max_height = z.max(max_height);
