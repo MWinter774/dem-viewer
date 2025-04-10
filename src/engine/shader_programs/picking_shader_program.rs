@@ -17,6 +17,7 @@ impl PickingShaderProgram {
         let mut vertex_id_attrib_pointer_config = opengl::VertexAttributePointerConfig::default();
         vertex_id_attrib_pointer_config.index = 1;
         vertex_id_attrib_pointer_config.size = 1;
+        vertex_id_attrib_pointer_config.type_ = gl::UNSIGNED_INT;
         let vertex_id_attrib_pointer =
             opengl::VertexAttributePointer::new(vertex_id_attrib_pointer_config);
 

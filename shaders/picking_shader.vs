@@ -4,7 +4,7 @@ layout (location = 1) in uint vertex_id;
 
 uniform mat4 MVP;
 
-out uint vid;
+flat out uint vid;
 
 void main()
 {
