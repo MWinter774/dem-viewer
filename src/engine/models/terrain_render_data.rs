@@ -4,6 +4,7 @@ use crate::engine::models;
 
 pub struct TerrainRenderData {
     vertices: Vec<f32>,
+    vertices_ids: Vec<usize>,
     uv: Vec<f32>,
     indices: Vec<u32>,
     min_height: f32,
@@ -12,10 +13,11 @@ pub struct TerrainRenderData {
 
 impl TerrainRenderData {
     pub fn new(terrain_data: &models::TerrainModelData) -> Self {
-        let (vertices, uv, indices, min_height, max_height) =
+        let (vertices, vertices_ids, uv, indices, min_height, max_height) =
             Self::generate_data_from_terrain_data(terrain_data);
         Self {
             vertices,
+            vertices_ids,
             uv,
             indices,
             min_height,
@@ -25,6 +27,9 @@ impl TerrainRenderData {
 
     pub fn get_vertices(&self) -> &Vec<f32> {
         &self.vertices
+    }
+    pub fn get_vertices_ids(&self) -> &Vec<usize> {
+        &self.vertices_ids
     }
     pub fn get_uv(&self) -> &Vec<f32> {
         &self.uv
@@ -41,8 +46,9 @@ impl TerrainRenderData {
 
     fn generate_data_from_terrain_data(
         terrain_data: &models::TerrainModelData,
-    ) -> (Vec<f32>, Vec<f32>, Vec<u32>, f32, f32) {
+    ) -> (Vec<f32>, Vec<usize>, Vec<f32>, Vec<u32>, f32, f32) {
         let mut vertices: Vec<f32> = Vec::new();
+        let mut vertices_ids: Vec<usize> = Vec::new();
         let mut uv: Vec<f32> = Vec::new();
         let mut indices: Vec<u32> = Vec::new();
 
@@ -77,6 +83,8 @@ impl TerrainRenderData {
                 vertices.push(z);
                 vertices.push(y);
 
+                vertices_ids.push(j * rs_width + i);
+
                 min_height = z.min(min_height);
                 max_height = z.max(max_height);
 
@@ -106,6 +114,6 @@ impl TerrainRenderData {
             }
         }
 
-        (vertices, uv, indices, min_height, max_height)
+        (vertices, vertices_ids, uv, indices, min_height, max_height)
     }
 }
