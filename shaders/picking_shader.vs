@@ -8,6 +8,6 @@ out uint vid;
 
 void main()
 {
-    gl_Position = MVP * vec4(vertices, 1.0);
     vid = vertex_id;
+    gl_Position = MVP * vec4(vertices, 1.0);
 }

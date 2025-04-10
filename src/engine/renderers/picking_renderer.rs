@@ -20,6 +20,9 @@ impl PickingRenderer {
     ) {
         self.picking_shader_program.use_program();
         terrain.get_terrain_opengl_object().bind_vao();
+        
+        terrain.get_terrain_opengl_object().bind_vertices_ids_vbo();
+        self.picking_shader_program.enable_vertex_id_attrib_array();
 
         terrain.get_terrain_opengl_object().bind_vertices_vbo();
         self.picking_shader_program.enable_vertex_attrib_array();
