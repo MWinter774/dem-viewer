@@ -36,6 +36,9 @@ impl Engine {
                 gl::ClearColor(0.0, 0.0, 0.5, 0.0);
             }
 
+            if frame_data.input_system.mouse.is_left_mouse_button_pressed() {
+                scene.picking_phase();
+            }
             scene.render(&self.camera);
 
             if frame_data

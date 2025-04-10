@@ -6,16 +6,19 @@ use crate::{
 pub struct Scene {
     terrain: models::Terrain,
     terrain_renderer: renderers::TerrainRenderer,
+    picking_renderer: renderers::PickingRenderer,
 }
 
 impl Scene {
     pub fn new(geotiff_file_path: &str, terrain_texture_file_path: &str) -> Self {
         let terrain =
             models::Terrain::from_geotiff_file(geotiff_file_path, terrain_texture_file_path);
-        let terrain_renderer = renderers::TerrainRenderer::new();
+            let terrain_renderer = renderers::TerrainRenderer::new();
+            let picking_renderer = renderers::PickingRenderer::new();
         Self {
             terrain,
             terrain_renderer,
+            picking_renderer,
         }
     }
 
@@ -28,5 +31,8 @@ impl Scene {
                     .get_terrain_model_position_data()
                     .get_model_matrix()),
         );
+    }
+
+    pub fn picking_phase(&self) {
     }
 }
