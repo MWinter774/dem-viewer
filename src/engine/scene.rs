@@ -33,7 +33,7 @@ impl Scene {
         );
     }
 
-    pub fn picking_phase(&mut self, camera: &engine::Camera) {
+    pub fn render_picking_frame(&mut self, camera: &engine::Camera) {
         self.picking_renderer.render_terrain_for_picking(
             &self.terrain,
             &(camera.get_pv_matrix()

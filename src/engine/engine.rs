@@ -37,7 +37,7 @@ impl Engine {
             }
 
             if frame_data.input_system.mouse.is_left_mouse_button_pressed() {
-                scene.picking_phase(&self.camera);
+                scene.render_picking_frame(&self.camera);
             } else {
                 scene.render(&self.camera);
             }
