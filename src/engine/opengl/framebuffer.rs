@@ -16,10 +16,25 @@ impl Framebuffer {
             gl::BindFramebuffer(gl::FRAMEBUFFER, self.framebuffer_id);
         }
     }
+    pub fn bind_draw_framebuffer(&self) {
+        unsafe {
+            gl::BindFramebuffer(gl::DRAW_FRAMEBUFFER, self.framebuffer_id);
+        }
+    }
+    pub fn bind_read_framebuffer(&self) {
+        unsafe {
+            gl::BindFramebuffer(gl::READ_FRAMEBUFFER, self.framebuffer_id);
+        }
+    }
 
     pub fn unbind_framebuffer(&self) {
         unsafe {
             gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
+        }
+    }
+    pub fn unbind_read_framebuffer(&self) {
+        unsafe {
+            gl::BindFramebuffer(gl::READ_FRAMEBUFFER, 0);
         }
     }
 }
