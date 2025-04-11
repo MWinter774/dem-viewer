@@ -51,22 +51,7 @@ impl Scene {
         );
     }
 
-    pub fn read_color_under_mouse(&self) -> glm::U8Vec4 {
-        let mut color: glm::U8Vec4 = glm::U8Vec4::new_random();
-        unsafe {
-            gl::Flush();
-            gl::Finish();
-            gl::PixelStorei(gl::UNPACK_ALIGNMENT, 1);
-            gl::ReadPixels(
-                400,
-                300,
-                1,
-                1,
-                gl::RGBA,
-                gl::UNSIGNED_BYTE,
-                color.as_mut_ptr().cast(),
-            );
-        }
-        color
+    pub fn read_color_at_pixel(&self, x: gl::types::GLint, y: gl::types::GLint) -> glm::UVec3 {
+        self.picking_renderer.read_pixel_at(x, y)
     }
 }

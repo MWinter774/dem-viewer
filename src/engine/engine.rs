@@ -38,13 +38,9 @@ impl Engine {
 
             if frame_data.input_system.mouse.is_left_mouse_button_pressed() {
                 scene.render_picking_frame(&self.camera);
-                let picked_color = scene.read_color_under_mouse();
-                let vertex_id = (picked_color.x as u32)
-                    + (picked_color.y as u32) * 256
-                    + (picked_color.z as u32) * 256 * 256;
-            } else {
-                scene.render(&self.camera);
+                let _picked_color = scene.read_color_at_pixel(400, 300);
             }
+            scene.render(&self.camera);
 
             if frame_data
                 .input_system
