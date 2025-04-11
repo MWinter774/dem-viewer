@@ -12,11 +12,16 @@ pub struct Scene {
 }
 
 impl Scene {
-    pub fn new(geotiff_file_path: &str, terrain_texture_file_path: &str) -> Self {
+    pub fn new(
+        geotiff_file_path: &str,
+        terrain_texture_file_path: &str,
+        window_width: usize,
+        window_height: usize,
+    ) -> Self {
         let terrain =
             models::Terrain::from_geotiff_file(geotiff_file_path, terrain_texture_file_path);
         let terrain_renderer = renderers::TerrainRenderer::new();
-        let picking_renderer = renderers::PickingRenderer::new();
+        let picking_renderer = renderers::PickingRenderer::new(window_width, window_height);
         Self {
             terrain,
             terrain_renderer,
