@@ -59,6 +59,8 @@ impl PickingRenderer {
                 std::ptr::null(),
             );
         }
+
+        self.picking_framebuffer.unbind_draw_framebuffer();
     }
 
     fn init_framebuffer_and_textures(
