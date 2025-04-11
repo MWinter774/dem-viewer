@@ -63,6 +63,28 @@ impl PickingRenderer {
         self.picking_framebuffer.unbind_draw_framebuffer();
     }
 
+    pub fn read_pixel_at(&self, x: gl::types::GLint, y: gl::types::GLint) -> glm::UVec3 {
+        let mut color: glm::UVec3 = glm::UVec3::new(0, 0, 0);
+        self.picking_framebuffer.bind_read_framebuffer();
+        unsafe {
+            gl::ReadBuffer(gl::COLOR_ATTACHMENT0);
+
+            gl::ReadPixels(
+                x,
+                y,
+                1,
+                1,
+                gl::RGB_INTEGER,
+                gl::UNSIGNED_INT,
+                color.as_mut_ptr().cast(),
+            );
+
+            gl::ReadBuffer(gl::NONE);
+        }
+        self.picking_framebuffer.unbind_read_framebuffer();
+        color
+    }
+
     fn init_framebuffer_and_textures(
         framebuffer: &opengl::Framebuffer,
         color_texture: &opengl::Texture,
