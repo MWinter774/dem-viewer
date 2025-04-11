@@ -38,7 +38,9 @@ impl Engine {
 
             if frame_data.input_system.mouse.is_left_mouse_button_pressed() {
                 scene.render_picking_frame(&self.camera);
-                let _picked_color = scene.read_color_at_pixel(400, 300);
+                let picked_color = scene.read_color_at_pixel(400, 300);
+                let vid = picked_color.x | (picked_color.y << 8);
+                let primitive_id = picked_color.z;
             }
             scene.render(&self.camera);
 
