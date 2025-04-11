@@ -34,6 +34,11 @@ impl PickingRenderer {
         terrain: &models::Terrain,
         mvp_matrix: &glm::Mat4,
     ) {
+        self.picking_framebuffer.bind_draw_framebuffer();
+        unsafe {
+            gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
+        }
+
         self.picking_shader_program.use_program();
         terrain.get_terrain_opengl_object().bind_vao();
 
