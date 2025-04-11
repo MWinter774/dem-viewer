@@ -32,6 +32,11 @@ impl Framebuffer {
             gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
         }
     }
+    pub fn unbind_draw_framebuffer(&self) {
+        unsafe {
+            gl::BindFramebuffer(gl::DRAW_FRAMEBUFFER, 0);
+        }
+    }
     pub fn unbind_read_framebuffer(&self) {
         unsafe {
             gl::BindFramebuffer(gl::READ_FRAMEBUFFER, 0);
