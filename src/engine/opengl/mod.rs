@@ -8,6 +8,7 @@ pub use vao_4buffer::VAO4Buffer;
 pub use vbo::VBO;
 pub use vertex_attribute_pointer::VertexAttributePointer;
 pub use vertex_attribute_pointer::VertexAttributePointerConfig;
+pub use framebuffer::Framebuffer;
 
 mod shader_program;
 mod texture;
@@ -17,3 +18,4 @@ mod vao_3buffer;
 mod vao_4buffer;
 mod vbo;
 mod vertex_attribute_pointer;
+mod framebuffer;
