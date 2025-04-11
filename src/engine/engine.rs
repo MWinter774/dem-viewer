@@ -23,7 +23,7 @@ impl Engine {
             gl::DepthFunc(gl::LESS);
         }
 
-        let mut scene = engine::Scene::new("DEM\\1.tif", "textures\\gray.jpeg");
+        let mut scene = engine::Scene::new("DEM\\1.tif", "textures\\gray.jpeg", 800, 600);
 
         while !window_should_close {
             // Swap the buffers of the opengl window and updates event pipeline
