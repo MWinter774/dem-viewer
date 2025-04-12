@@ -6,8 +6,13 @@ pub struct TerrainRenderer {
 }
 
 impl TerrainRenderer {
-    pub fn new() -> Self {
-        let terrain_shader_program = shader_programs::TerrainShaderProgram::new();
+    pub fn new(terrain: &models::Terrain) -> Self {
+        let terrain_shader_program = shader_programs::TerrainShaderProgram::new(
+            terrain
+                .get_terrain_opengl_object()
+                .get_terrain_vertices_vbo(),
+            terrain.get_terrain_opengl_object().get_terrain_uv_vbo(),
+        );
         Self {
             terrain_shader_program,
         }
