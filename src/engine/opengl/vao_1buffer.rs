@@ -26,14 +26,13 @@ impl VAO1Buffer {
     pub fn load_array_buffer<T>(&self, data: &[T]) {
         self.bind();
         self.vbo.bind_as_array_buffer();
-        unsafe {
-            gl::BufferData(
-                gl::ARRAY_BUFFER,
-                (data.len() * std::mem::size_of::<T>()) as gl::types::GLsizeiptr,
-                data.as_ptr() as *const gl::types::GLvoid,
-                gl::STATIC_DRAW,
-            );
-        }
+        self.vbo.load_data_as_array_buffer(data);
+    }
+    
+    pub fn load_dynamic_array_buffer(&self, max_size_in_bytes: isize) {
+        self.bind();
+        self.vbo.bind_as_array_buffer();
+        self.vbo.load_data_as_dynamic_array_buffer(max_size_in_bytes);
     }
 }
 
