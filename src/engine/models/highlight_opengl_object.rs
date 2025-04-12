@@ -13,6 +13,7 @@ impl HighlightOpenGLObject {
         let highlight_vao = opengl::VAO1Buffer::new();
         // Tells OpenGL to allocate enough space for 3 vertices of the triangle that will be highlighted
         highlight_vao.init_dynamic_array_buffer(std::mem::size_of::<HighlightData>() as isize);
+
         Self { highlight_vao }
     }
 
@@ -27,5 +28,9 @@ impl HighlightOpenGLObject {
 
     fn vertices_to_highlight_data(v1: &glm::Vec3, v2: &glm::Vec3, v3: &glm::Vec3) -> HighlightData {
         [v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, v3.x, v3.y, v3.z]
+    }
+
+    pub fn get_highlight_vbo(&self) -> &opengl::VBO {
+        self.highlight_vao.get_vbo()
     }
 }
