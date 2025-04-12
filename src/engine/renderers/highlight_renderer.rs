@@ -14,7 +14,7 @@ impl HighlightRenderer {
         }
     }
 
-    pub fn render_triangle_on_terrain(
+    pub fn render_highlight_on_terrain(
         &mut self,
         terrain: &models::Terrain,
         mvp_matrix: &glm::Mat4,

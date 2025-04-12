@@ -9,7 +9,7 @@ pub struct Scene {
     terrain: models::Terrain,
     terrain_renderer: renderers::TerrainRenderer,
     picking_renderer: renderers::PickingRenderer,
-    triangle_renderer: renderers::HighlightRenderer,
+    highlight_renderer: renderers::HighlightRenderer,
 }
 
 impl Scene {
@@ -29,7 +29,7 @@ impl Scene {
             terrain,
             terrain_renderer,
             picking_renderer,
-            triangle_renderer,
+            highlight_renderer: triangle_renderer,
         }
     }
 
@@ -56,7 +56,7 @@ impl Scene {
     }
 
     pub fn render_picking_highlight(&mut self, camera: &engine::Camera, vid: u32) {
-        self.triangle_renderer.render_triangle_on_terrain(
+        self.highlight_renderer.render_highlight_on_terrain(
             &self.terrain,
             &(camera.get_pv_matrix()
                 * self
