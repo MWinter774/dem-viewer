@@ -44,6 +44,17 @@ impl VBO {
             );
         }
     }
+
+    pub fn load_data_as_dynamic_array_buffer(&self, max_size_in_bytes: isize) {
+        unsafe {
+            gl::BufferData(
+                gl::ARRAY_BUFFER,
+                max_size_in_bytes,
+                std::ptr::null(),
+                gl::DYNAMIC_DRAW,
+            );
+        }
+    }
 }
 
 impl Drop for VBO {
