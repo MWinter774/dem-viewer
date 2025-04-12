@@ -20,8 +20,9 @@ impl Scene {
     ) -> Self {
         let terrain =
             models::Terrain::from_geotiff_file(geotiff_file_path, terrain_texture_file_path);
-        let terrain_renderer = renderers::TerrainRenderer::new();
-        let picking_renderer = renderers::PickingRenderer::new(window_width, window_height);
+        let terrain_renderer = renderers::TerrainRenderer::new(&terrain);
+        let picking_renderer =
+            renderers::PickingRenderer::new(&terrain, window_width, window_height);
         Self {
             terrain,
             terrain_renderer,

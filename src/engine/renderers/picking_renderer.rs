@@ -9,8 +9,16 @@ pub struct PickingRenderer {
 }
 
 impl PickingRenderer {
-    pub fn new(window_width: usize, window_height: usize) -> Self {
-        let picking_shader_program = shader_programs::PickingShaderProgram::new();
+    pub fn new(terrain: &models::Terrain, window_width: usize, window_height: usize) -> Self {
+        terrain.get_terrain_opengl_object().bind_vao();
+        let picking_shader_program = shader_programs::PickingShaderProgram::new(
+            terrain
+                .get_terrain_opengl_object()
+                .get_terrain_vertices_vbo(),
+            terrain
+                .get_terrain_opengl_object()
+                .get_terrain_vertices_ids_vbo(),
+        );
         let picking_framebuffer = opengl::Framebuffer::new();
         let picking_color_texture = opengl::Texture::new();
         let picking_depth_texture = opengl::Texture::new();
@@ -76,7 +84,7 @@ impl PickingRenderer {
                 1,
                 gl::RGB_INTEGER,
                 gl::UNSIGNED_INT,
-                color.as_mut_ptr().cast(),
+                color.as_mut_ptr() as *mut std::ffi::c_void,
             );
 
             gl::ReadBuffer(gl::NONE);

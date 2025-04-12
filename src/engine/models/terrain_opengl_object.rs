@@ -22,6 +22,16 @@ impl TerrainOpenGLObject {
         }
     }
 
+    pub fn get_terrain_vertices_vbo(&self) -> &opengl::VBO {
+        self.terrain_vao.get_vbo(VERTICES_VBO_INDEX)
+    }
+    pub fn get_terrain_vertices_ids_vbo(&self) -> &opengl::VBO {
+        self.terrain_vao.get_vbo(VERTICES_IDS_VBO_INDEX)
+    }
+    pub fn get_terrain_uv_vbo(&self) -> &opengl::VBO {
+        self.terrain_vao.get_vbo(UV_VBO_INDEX)
+    }
+
     pub fn bind_vao(&self) {
         self.terrain_vao.bind_vertex_array();
     }
@@ -62,11 +72,11 @@ impl TerrainOpenGLObject {
         // Loads uv texture coords of terrain to vbo object
         terrain_vao.bind_vbo_as_array_buffer(UV_VBO_INDEX);
         terrain_vao.load_array_buffer(UV_VBO_INDEX, terrain_render_data.get_uv());
-        
+
         // Loads indices of terrain to vbo object
         terrain_vao.bind_vbo_as_element_array_buffer(INDICES_VBO_INDEX);
         terrain_vao.load_element_array_buffer(INDICES_VBO_INDEX, terrain_render_data.get_indices());
-        
+
         // Loads vertices ids of terrain to vbo object
         terrain_vao.bind_vbo_as_array_buffer(VERTICES_IDS_VBO_INDEX);
         terrain_vao.load_array_buffer(
