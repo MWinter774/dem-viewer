@@ -8,12 +8,13 @@ pub struct HighlightShaderProgram {
 }
 
 impl HighlightShaderProgram {
-    pub fn new() -> Self {
+    pub fn new(highlight_vbo: &opengl::VBO) -> Self {
         let mut shader_program = opengl::ShaderProgram::new(
             "shaders\\highlight_shader.vs",
             "shaders\\highlight_shader.fs",
         );
 
+        highlight_vbo.bind_as_array_buffer();
         let vertex_attrib_pointer = opengl::VertexAttributePointer::new_float(
             opengl::VertexAttributePointerConfig::default(),
         );
@@ -32,6 +33,9 @@ impl HighlightShaderProgram {
 
     pub fn enable_vertex_attrib_array(&self) {
         self.vertex_attrib_pointer.enable_vertex_attrib_array();
+    }
+    pub fn reload_vertex_attrib_array(&self) {
+        self.vertex_attrib_pointer.reload_vertex_attrib_array();
     }
     pub fn set_mvp_uniform_variable(&mut self, mvp_matrix: &glm::Mat4) {
         self.shader_program

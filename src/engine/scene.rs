@@ -5,6 +5,8 @@ use crate::{
     engine::{models, renderers},
 };
 
+use super::transformations;
+
 pub struct Scene {
     terrain: models::Terrain,
     highlight: models::Highlight,
@@ -26,7 +28,7 @@ impl Scene {
         let highlight = models::Highlight::new();
 
         let terrain_renderer = renderers::TerrainRenderer::new(&terrain);
-        let highlight_renderer = renderers::HighlightRenderer::new();
+        let highlight_renderer = renderers::HighlightRenderer::new(&highlight);
         let picking_renderer =
             renderers::PickingRenderer::new(&terrain, window_width, window_height);
         Self {

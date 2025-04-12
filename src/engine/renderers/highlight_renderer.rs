@@ -6,8 +6,10 @@ pub struct HighlightRenderer {
 }
 
 impl HighlightRenderer {
-    pub fn new() -> Self {
-        let highlight_shader_program = shader_programs::HighlightShaderProgram::new();
+    pub fn new(highlight: &models::Highlight) -> Self {
+        let highlight_shader_program = shader_programs::HighlightShaderProgram::new(
+            highlight.get_highlight_opengl_object().get_highlight_vbo(),
+        );
 
         Self {
             highlight_shader_program,
@@ -29,6 +31,8 @@ impl HighlightRenderer {
         highlight
             .get_highlight_opengl_object()
             .load_highlight_data(&v1, &v2, &v3);
+        self.highlight_shader_program.enable_vertex_attrib_array();
+        self.highlight_shader_program.reload_vertex_attrib_array();
 
         self.highlight_shader_program
             .set_mvp_uniform_variable(mvp_matrix);

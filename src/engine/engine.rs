@@ -39,9 +39,11 @@ impl Engine {
             if frame_data.input_system.mouse.is_left_mouse_button_pressed() {
                 scene.render_picking_frame(&self.camera);
                 let vid = scene.read_color_at_pixel(400, 300).x;
+                scene.render(&self.camera);
                 scene.render_picking_highlight(&self.camera, vid);
+            } else {
+                scene.render(&self.camera);
             }
-            scene.render(&self.camera);
 
             if frame_data
                 .input_system
