@@ -27,15 +27,20 @@ impl VAO1Buffer {
         self.vbo.bind_as_array_buffer();
         self.vbo.load_data_as_array_buffer(data);
     }
-    
+
     pub fn init_dynamic_array_buffer(&self, max_size_in_bytes: isize) {
         self.vbo.bind_as_array_buffer();
-        self.vbo.init_data_as_dynamic_array_buffer(max_size_in_bytes);
+        self.vbo
+            .init_data_as_dynamic_array_buffer(max_size_in_bytes);
     }
-    
+
     pub fn load_dynamic_array_buffer<T>(&self, data: &[T]) {
         self.vbo.bind_as_array_buffer();
         self.vbo.load_data_as_dynamic_array_buffer(data);
+    }
+
+    pub fn get_vbo(&self) -> &opengl::VBO {
+        &self.vbo
     }
 }
 
