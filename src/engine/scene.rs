@@ -9,6 +9,7 @@ pub struct Scene {
     terrain: models::Terrain,
     terrain_renderer: renderers::TerrainRenderer,
     picking_renderer: renderers::PickingRenderer,
+    triangle_renderer: renderers::HighlightRenderer,
 }
 
 impl Scene {
@@ -21,12 +22,14 @@ impl Scene {
         let terrain =
             models::Terrain::from_geotiff_file(geotiff_file_path, terrain_texture_file_path);
         let terrain_renderer = renderers::TerrainRenderer::new(&terrain);
+        let triangle_renderer = renderers::HighlightRenderer::new();
         let picking_renderer =
             renderers::PickingRenderer::new(&terrain, window_width, window_height);
         Self {
             terrain,
             terrain_renderer,
             picking_renderer,
+            triangle_renderer,
         }
     }
 
@@ -49,6 +52,18 @@ impl Scene {
                     .terrain
                     .get_terrain_model_position_data()
                     .get_model_matrix()),
+        );
+    }
+
+    pub fn render_picking_highlight(&mut self, camera: &engine::Camera, vid: u32) {
+        self.triangle_renderer.render_triangle_on_terrain(
+            &self.terrain,
+            &(camera.get_pv_matrix()
+                * self
+                    .terrain
+                    .get_terrain_model_position_data()
+                    .get_model_matrix()),
+            vid,
         );
     }
 
