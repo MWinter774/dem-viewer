@@ -45,13 +45,23 @@ impl VBO {
         }
     }
 
-    pub fn load_data_as_dynamic_array_buffer(&self, max_size_in_bytes: isize) {
+    pub fn init_data_as_dynamic_array_buffer(&self, max_size_in_bytes: isize) {
         unsafe {
             gl::BufferData(
                 gl::ARRAY_BUFFER,
                 max_size_in_bytes,
                 std::ptr::null(),
                 gl::DYNAMIC_DRAW,
+            );
+        }
+    }
+    pub fn load_data_as_dynamic_array_buffer<T>(&self, data: &[T]) {
+        unsafe {
+            gl::BufferSubData(
+                gl::ARRAY_BUFFER,
+                0,
+                (data.len() * std::mem::size_of::<T>()) as gl::types::GLsizeiptr,
+                data.as_ptr() as *const gl::types::GLvoid,
             );
         }
     }
