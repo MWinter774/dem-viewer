@@ -11,16 +11,18 @@ pub struct TerrainShaderProgram {
 }
 
 impl TerrainShaderProgram {
-    pub fn new() -> Self {
+    pub fn new(vertices_vbo: &opengl::VBO, uv_vbo: &opengl::VBO) -> Self {
         let mut shader_program =
             opengl::ShaderProgram::new("shaders\\terrain_shader.vs", "shaders\\terrain_shader.fs");
+        vertices_vbo.bind_as_array_buffer();
         let vertex_attrib_pointer =
-            opengl::VertexAttributePointer::new(opengl::VertexAttributePointerConfig::default());
+            opengl::VertexAttributePointer::new_float(opengl::VertexAttributePointerConfig::default());
         let mut uv_vertex_attrib_pointer_config = opengl::VertexAttributePointerConfig::default();
         uv_vertex_attrib_pointer_config.index = 1;
         uv_vertex_attrib_pointer_config.size = 2;
+        uv_vbo.bind_as_array_buffer();
         let uv_vertex_attrib_pointer =
-            opengl::VertexAttributePointer::new(uv_vertex_attrib_pointer_config);
+            opengl::VertexAttributePointer::new_float(uv_vertex_attrib_pointer_config);
         let mvp_uniform_variable =
             std::rc::Rc::clone(&shader_program.get_uniform_variable("MVP").unwrap());
         let max_height_uniform_variable =
