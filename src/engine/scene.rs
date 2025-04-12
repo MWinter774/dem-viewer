@@ -5,11 +5,8 @@ use crate::{
     engine::{models, renderers},
 };
 
-use super::transformations;
-
 pub struct Scene {
     terrain: models::Terrain,
-    highlight: models::Highlight,
     terrain_renderer: renderers::TerrainRenderer,
     picking_renderer: renderers::PickingRenderer,
     highlight_renderer: renderers::HighlightRenderer,
@@ -25,15 +22,12 @@ impl Scene {
         let terrain =
             models::Terrain::from_geotiff_file(geotiff_file_path, terrain_texture_file_path);
 
-        let highlight = models::Highlight::new();
-
         let terrain_renderer = renderers::TerrainRenderer::new(&terrain);
-        let highlight_renderer = renderers::HighlightRenderer::new(&highlight);
+        let highlight_renderer = renderers::HighlightRenderer::new(&terrain);
         let picking_renderer =
             renderers::PickingRenderer::new(&terrain, window_width, window_height);
         Self {
             terrain,
-            highlight,
             terrain_renderer,
             picking_renderer,
             highlight_renderer,
@@ -62,16 +56,15 @@ impl Scene {
         );
     }
 
-    pub fn render_picking_highlight(&mut self, camera: &engine::Camera, vid: u32) {
+    pub fn render_picking_highlight(&mut self, camera: &engine::Camera, primitive_id: u32) {
         self.highlight_renderer.render_highlight_on_terrain(
             &self.terrain,
-            &self.highlight,
             &(camera.get_pv_matrix()
                 * self
                     .terrain
                     .get_terrain_model_position_data()
                     .get_model_matrix()),
-            vid,
+            primitive_id,
         );
     }
 
