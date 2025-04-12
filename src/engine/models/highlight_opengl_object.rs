@@ -16,6 +16,10 @@ impl HighlightOpenGLObject {
         Self { highlight_vao }
     }
 
+    pub fn bind_vao(&self) {
+        self.highlight_vao.bind();
+    }
+
     pub fn load_highlight_data(&self, v1: &glm::Vec3, v2: &glm::Vec3, v3: &glm::Vec3) {
         self.highlight_vao
             .load_dynamic_array_buffer(&Self::vertices_to_highlight_data(v1, v2, v3));

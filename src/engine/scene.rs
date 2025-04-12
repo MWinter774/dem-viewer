@@ -7,6 +7,7 @@ use crate::{
 
 pub struct Scene {
     terrain: models::Terrain,
+    highlight: models::Highlight,
     terrain_renderer: renderers::TerrainRenderer,
     picking_renderer: renderers::PickingRenderer,
     highlight_renderer: renderers::HighlightRenderer,
@@ -21,15 +22,19 @@ impl Scene {
     ) -> Self {
         let terrain =
             models::Terrain::from_geotiff_file(geotiff_file_path, terrain_texture_file_path);
+
+        let highlight = models::Highlight::new();
+
         let terrain_renderer = renderers::TerrainRenderer::new(&terrain);
-        let triangle_renderer = renderers::HighlightRenderer::new();
+        let highlight_renderer = renderers::HighlightRenderer::new();
         let picking_renderer =
             renderers::PickingRenderer::new(&terrain, window_width, window_height);
         Self {
             terrain,
+            highlight,
             terrain_renderer,
             picking_renderer,
-            highlight_renderer: triangle_renderer,
+            highlight_renderer,
         }
     }
 
@@ -58,6 +63,7 @@ impl Scene {
     pub fn render_picking_highlight(&mut self, camera: &engine::Camera, vid: u32) {
         self.highlight_renderer.render_highlight_on_terrain(
             &self.terrain,
+            &self.highlight,
             &(camera.get_pv_matrix()
                 * self
                     .terrain

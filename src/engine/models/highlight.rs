@@ -14,4 +14,8 @@ impl Highlight {
             highlight_opengl_object,
         }
     }
+
+    pub fn get_highlight_opengl_object(&self) -> &models::HighlightOpenGLObject {
+        &self.highlight_opengl_object
+    }
 }
