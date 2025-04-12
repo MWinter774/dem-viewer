@@ -44,6 +44,10 @@ impl VAO4Buffer {
         self.vbos[vbo_index].bind_as_element_array_buffer();
         self.vbos[vbo_index].load_data_as_element_array_buffer(data);
     }
+
+    pub fn get_vbo(&self, vbo_index: usize) -> &opengl::VBO {
+        &self.vbos[vbo_index]
+    }
 }
 
 impl Drop for VAO4Buffer {
