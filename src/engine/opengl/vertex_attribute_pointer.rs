@@ -31,6 +31,7 @@ impl Default for VertexAttributePointerConfig {
 
 impl VertexAttributePointer {
     pub fn new_float(data_config: self::VertexAttributePointerConfig) -> Self {
+        
         unsafe {
             gl::VertexAttribPointer(
                 data_config.index,
@@ -61,6 +62,18 @@ impl VertexAttributePointer {
     pub fn enable_vertex_attrib_array(&self) {
         unsafe {
             gl::EnableVertexAttribArray(self.data_config.index);
+        }
+    }
+    pub fn reload_vertex_attrib_array(&self) {
+        unsafe {
+            gl::VertexAttribPointer(
+                self.data_config.index,
+                self.data_config.size,
+                self.data_config.type_,
+                self.data_config.normalized,
+                self.data_config.stride,
+                self.data_config.pointer,
+            );
         }
     }
 
