@@ -2,32 +2,36 @@ use crate::engine::{models, shader_programs};
 use nalgebra_glm as glm;
 
 pub struct HighlightRenderer {
-    triangle_shader_program: shader_programs::HighlightShaderProgram,
+    highlight_shader_program: shader_programs::HighlightShaderProgram,
 }
 
 impl HighlightRenderer {
     pub fn new() -> Self {
-        let triangle_shader_program = shader_programs::HighlightShaderProgram::new();
+        let highlight_shader_program = shader_programs::HighlightShaderProgram::new();
 
         Self {
-            triangle_shader_program,
+            highlight_shader_program,
         }
     }
 
     pub fn render_highlight_on_terrain(
         &mut self,
         terrain: &models::Terrain,
+        highlight: &models::Highlight,
         mvp_matrix: &glm::Mat4,
         vid: u32,
     ) {
-        self.triangle_shader_program.use_program();
-        terrain.get_terrain_opengl_object().bind_vao();
-
-        self.triangle_shader_program
-            .set_mvp_uniform_variable(mvp_matrix);
+        self.highlight_shader_program.use_program();
+        highlight.get_highlight_opengl_object().bind_vao();
 
         let (v1, v2, v3) =
             Self::get_triangle_vertices(terrain.get_terrain_render_data().get_vertices(), vid);
+        highlight
+            .get_highlight_opengl_object()
+            .load_highlight_data(&v1, &v2, &v3);
+
+        self.highlight_shader_program
+            .set_mvp_uniform_variable(mvp_matrix);
 
         unsafe {
             gl::DrawArrays(gl::TRIANGLES, 0, 3);
