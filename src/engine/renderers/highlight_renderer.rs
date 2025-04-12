@@ -6,9 +6,11 @@ pub struct HighlightRenderer {
 }
 
 impl HighlightRenderer {
-    pub fn new(highlight: &models::Highlight) -> Self {
+    pub fn new(terrain: &models::Terrain) -> Self {
         let highlight_shader_program = shader_programs::HighlightShaderProgram::new(
-            highlight.get_highlight_opengl_object().get_highlight_vbo(),
+            terrain
+                .get_terrain_opengl_object()
+                .get_terrain_vertices_vbo(),
         );
 
         Self {
@@ -19,45 +21,24 @@ impl HighlightRenderer {
     pub fn render_highlight_on_terrain(
         &mut self,
         terrain: &models::Terrain,
-        highlight: &models::Highlight,
         mvp_matrix: &glm::Mat4,
-        vid: u32,
+        primitive_id: u32,
     ) {
         self.highlight_shader_program.use_program();
-        highlight.get_highlight_opengl_object().bind_vao();
-
-        let (v1, v2, v3) =
-            Self::get_triangle_vertices(terrain.get_terrain_render_data().get_vertices(), vid);
-        highlight
-            .get_highlight_opengl_object()
-            .load_highlight_data(&v1, &v2, &v3);
-        self.highlight_shader_program.enable_vertex_attrib_array();
-        self.highlight_shader_program.reload_vertex_attrib_array();
+        terrain.get_terrain_opengl_object().bind_vao(); 
 
         self.highlight_shader_program
             .set_mvp_uniform_variable(mvp_matrix);
 
         unsafe {
-            gl::DrawArrays(gl::TRIANGLES, 0, 3);
+            gl::Clear(gl::DEPTH_BUFFER_BIT);
+            gl::DrawElementsBaseVertex(
+                gl::TRIANGLES,
+                3,
+                gl::UNSIGNED_INT,
+                (primitive_id * 3 * std::mem::size_of::<u32>() as u32) as *const std::ffi::c_void,
+                0,
+            );
         }
-    }
-
-    fn get_triangle_vertices(vertices: &Vec<f32>, vid: u32) -> (glm::Vec3, glm::Vec3, glm::Vec3) {
-        let v1 = glm::vec3(
-            vertices[(vid) as usize],
-            vertices[(vid + 1) as usize],
-            vertices[(vid + 2) as usize],
-        );
-        let v2 = glm::vec3(
-            vertices[(vid + 3) as usize],
-            vertices[(vid + 4) as usize],
-            vertices[(vid + 5) as usize],
-        );
-        let v3 = glm::vec3(
-            vertices[(vid + 6) as usize],
-            vertices[(vid + 7) as usize],
-            vertices[(vid + 8) as usize],
-        );
-        (v1, v2, v3)
     }
 }

@@ -5,5 +5,5 @@ out uvec3 FragColor;
 
 void main()
 {
-    FragColor = uvec3(vid);
+    FragColor = uvec3(vid, vid, gl_PrimitiveID);
 }
