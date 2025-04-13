@@ -36,6 +36,15 @@ impl Engine {
                 gl::ClearColor(0.0, 0.0, 0.5, 0.0);
             }
 
+            if frame_data
+                .input_system
+                .keyboard
+                .get_key_press_state(glfw::Key::B)
+                == glfw::Action::Press
+            {
+                scene.take_screenshot(&self.camera);
+            }
+
             scene.render_picking_frame(&self.camera);
             let pixel_data = scene.read_color_at_pixel(400, 300);
             let (object_index, primitive_id) = (pixel_data.x, pixel_data.z);
