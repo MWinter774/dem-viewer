@@ -10,6 +10,7 @@ pub struct Scene {
     terrain_renderer: renderers::TerrainRenderer,
     picking_renderer: renderers::PickingRenderer,
     highlight_renderer: renderers::HighlightRenderer,
+    screenshot_renderer: renderers::ScreenshotRenderer,
 }
 
 impl Scene {
@@ -26,11 +27,13 @@ impl Scene {
         let highlight_renderer = renderers::HighlightRenderer::new(&terrain);
         let picking_renderer =
             renderers::PickingRenderer::new(&terrain, window_width, window_height);
+        let screenshot_renderer = renderers::ScreenshotRenderer::new(window_width, window_height);
         Self {
             terrain,
             terrain_renderer,
             picking_renderer,
             highlight_renderer,
+            screenshot_renderer,
         }
     }
 
@@ -66,6 +69,10 @@ impl Scene {
                     .get_model_matrix()),
             primitive_id,
         );
+    }
+
+    pub fn take_screenshot(&mut self, camera: &engine::Camera) {
+        self.screenshot_renderer.take_screenshot();
     }
 
     pub fn read_color_at_pixel(&self, x: gl::types::GLint, y: gl::types::GLint) -> glm::UVec3 {
