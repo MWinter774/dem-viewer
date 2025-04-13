@@ -42,7 +42,7 @@ impl Engine {
                 .get_key_press_state(glfw::Key::B)
                 == glfw::Action::Press
             {
-                scene.take_screenshot(&self.camera);
+                let _pixel_data = scene.take_screenshot(&self.camera);
             }
 
             scene.render_picking_frame(&self.camera);

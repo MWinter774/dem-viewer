@@ -71,8 +71,12 @@ impl Scene {
         );
     }
 
-    pub fn take_screenshot(&mut self, camera: &engine::Camera) {
-        self.screenshot_renderer.take_screenshot();
+    pub fn take_screenshot(&mut self, camera: &engine::Camera) -> Vec<u8> {
+        self.screenshot_renderer.start_record_screenshot();
+        self.render(camera);
+        let screenshot = self.screenshot_renderer.screenshot();
+        self.screenshot_renderer.stop_record_screenshot();
+        screenshot
     }
 
     pub fn read_color_at_pixel(&self, x: gl::types::GLint, y: gl::types::GLint) -> glm::UVec3 {
