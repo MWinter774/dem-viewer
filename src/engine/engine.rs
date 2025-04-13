@@ -36,14 +36,12 @@ impl Engine {
                 gl::ClearColor(0.0, 0.0, 0.5, 0.0);
             }
 
-            if frame_data.input_system.mouse.is_left_mouse_button_pressed() {
-                scene.render_picking_frame(&self.camera);
-                let pixel_data = scene.read_color_at_pixel(400, 300);
-                let primitive_id = pixel_data.z;
-                scene.render(&self.camera);
+            scene.render_picking_frame(&self.camera);
+            let pixel_data = scene.read_color_at_pixel(400, 300);
+            let (object_index, primitive_id) = (pixel_data.x, pixel_data.z);
+            scene.render(&self.camera);
+            if object_index != 0 {
                 scene.render_picking_highlight(&self.camera, primitive_id);
-            } else {
-                scene.render(&self.camera);
             }
 
             if frame_data
