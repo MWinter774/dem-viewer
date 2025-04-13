@@ -45,7 +45,7 @@ impl Engine {
                 == glfw::Action::Press
             {
                 let pixel_data = scene.take_screenshot(&self.camera);
-                self.camera_view_application.display_pixels(pixel_data, 600);
+                self.camera_view_application.capture_clicked_points(pixel_data, 600);
             }
 
             scene.render_picking_frame(&self.camera);
