@@ -58,6 +58,8 @@ impl PickingRenderer {
 
         self.picking_shader_program
             .set_mvp_uniform_variable(mvp_matrix);
+        self.picking_shader_program
+            .set_object_index_uniform_variable(1);
 
         unsafe {
             gl::DrawElements(

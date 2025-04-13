@@ -6,6 +6,7 @@ pub struct PickingShaderProgram {
     vertex_attrib_pointer: opengl::VertexAttributePointer,
     vertex_id_attrib_pointer: opengl::VertexAttributePointer,
     mvp_uniform_variable: std::rc::Rc<opengl::UniformVariable>,
+    object_index_uniform_variable: std::rc::Rc<opengl::UniformVariable>,
 }
 
 impl PickingShaderProgram {
@@ -13,8 +14,9 @@ impl PickingShaderProgram {
         let mut shader_program =
             opengl::ShaderProgram::new("shaders\\picking_shader.vs", "shaders\\picking_shader.fs");
         vertices_vbo.bind_as_array_buffer();
-        let vertex_attrib_pointer =
-            opengl::VertexAttributePointer::new_float(opengl::VertexAttributePointerConfig::default());
+        let vertex_attrib_pointer = opengl::VertexAttributePointer::new_float(
+            opengl::VertexAttributePointerConfig::default(),
+        );
         let mut vertex_id_attrib_pointer_config = opengl::VertexAttributePointerConfig::default();
         vertex_id_attrib_pointer_config.index = 1;
         vertex_id_attrib_pointer_config.size = 1;
@@ -25,11 +27,14 @@ impl PickingShaderProgram {
 
         let mvp_uniform_variable =
             std::rc::Rc::clone(&shader_program.get_uniform_variable("MVP").unwrap());
+        let object_index_uniform_variable =
+            std::rc::Rc::clone(&shader_program.get_uniform_variable("objectIndex").unwrap());
         Self {
             shader_program,
             vertex_attrib_pointer,
             vertex_id_attrib_pointer,
             mvp_uniform_variable,
+            object_index_uniform_variable,
         }
     }
 
@@ -47,5 +52,9 @@ impl PickingShaderProgram {
     pub fn set_mvp_uniform_variable(&mut self, mvp_matrix: &glm::Mat4) {
         self.shader_program
             .set_uniform_variable_matrix_4fv(&self.mvp_uniform_variable, mvp_matrix);
+    }
+    pub fn set_object_index_uniform_variable(&mut self, object_index: u32) {
+        self.shader_program
+            .set_uniform_variable_1ui(&self.object_index_uniform_variable, object_index);
     }
 }
