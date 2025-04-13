@@ -63,6 +63,25 @@ impl Texture {
         }
     }
 
+    // Used for taking screenshot
+    pub fn load_rgb_texture(&self, width: usize, height: usize) {
+        unsafe {
+            gl::TexImage2D(
+                gl::TEXTURE_2D,
+                0,
+                gl::RGB as i32,
+                width as i32,
+                height as i32,
+                0,
+                gl::RGB,
+                gl::UNSIGNED_BYTE,
+                std::ptr::null(),
+            );
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR as i32);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::LINEAR as i32);
+        }
+    }
+
     // Binds color texture to a bound framebuffer. Framebuffer must be bound before call to this. Used for picking.
     pub fn attach_color_texture_to_framebuffer(&self) {
         unsafe {
