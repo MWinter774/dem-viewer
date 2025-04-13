@@ -14,7 +14,7 @@ impl ScreenshotRenderer {
 
         fbo.bind_framebuffer();
         texture.bind();
-        texture.load_unsigned_integer_texture(window_width, window_height);
+        texture.load_rgb_texture(window_width, window_height);
         texture.attach_color_texture_to_framebuffer();
         unsafe {
             if gl::CheckFramebufferStatus(gl::FRAMEBUFFER) != gl::FRAMEBUFFER_COMPLETE {
@@ -55,7 +55,7 @@ impl ScreenshotRenderer {
                 self.window_height as gl::types::GLsizei,
                 gl::RGB,
                 gl::UNSIGNED_BYTE,
-                pixel_data.as_mut_ptr() as *mut _,
+                pixel_data.as_mut_ptr() as *mut std::ffi::c_void,
             );
         }
         pixel_data
