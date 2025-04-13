@@ -92,6 +92,12 @@ impl ShaderProgram {
         }
     }
 
+    pub fn set_uniform_variable_1ui(&self, uniform_variable: &UniformVariable, val: u32) {
+        unsafe {
+            gl::Uniform1ui(uniform_variable.0, val);
+        }
+    }
+
     pub fn set_uniform_variable_matrix_4fv(
         &self,
         uniform_variable: &UniformVariable,
