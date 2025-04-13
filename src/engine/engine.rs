@@ -3,6 +3,7 @@ use crate::engine;
 pub struct Engine {
     context: engine::EngineContext,
     camera: engine::Camera,
+    camera_view_application: engine::CameraViewApp,
 }
 
 impl Engine {
@@ -10,6 +11,7 @@ impl Engine {
         Self {
             context: engine::EngineContext::new("DEM Viewer", 800, 600),
             camera: engine::Camera::default(),
+            camera_view_application: engine::CameraViewApp::new(),
         }
     }
 
@@ -42,7 +44,8 @@ impl Engine {
                 .get_key_press_state(glfw::Key::B)
                 == glfw::Action::Press
             {
-                let _pixel_data = scene.take_screenshot(&self.camera);
+                let pixel_data = scene.take_screenshot(&self.camera);
+                self.camera_view_application.display_pixels(pixel_data, 600);
             }
 
             scene.render_picking_frame(&self.camera);

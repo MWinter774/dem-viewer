@@ -59,4 +59,6 @@ impl EngineContext {
     pub fn set_should_terminate(&mut self, should_terminate: bool) {
         self.window.set_should_close(should_terminate)
     }
+
+    pub fn display_pixels(&self, pixel_data: &Vec<u8>) {}
 }

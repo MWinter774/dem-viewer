@@ -9,6 +9,7 @@ glfw = "0.58.0"
 nalgebra-glm = "0.3"
 gdal-win = "*"
 image = "0.25.6"
+opencv = "0.94.4"
 
 [build-dependencies]
 gdal-setup = "*"
