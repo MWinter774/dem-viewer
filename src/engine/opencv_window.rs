@@ -11,7 +11,7 @@ impl OpenCVWindow {
         Self { window_title }
     }
 
-    pub fn display_pixels(&self, mut pixels: Vec<u8>, window_height: usize) {
+    pub fn capture_points(&self, mut pixels: Vec<u8>, window_height: usize) {
         // Convert RGB to BGR (OpenCV expects BGR)
         for chunk in pixels.chunks_exact_mut(3) {
             chunk.swap(0, 2); // swap R and B
@@ -23,7 +23,18 @@ impl OpenCVWindow {
         opencv::core::flip(&mat, &mut flipped, 0).unwrap();
 
         highgui::imshow(&self.window_title, &flipped).unwrap();
+        highgui::set_mouse_callback(
+            &self.window_title,
+            Some(Box::new(move |event, x, y, _flags| {
+                Self::mouse_callback(event, x, y, _flags);
+            })),
+        )
+        .unwrap();
         highgui::wait_key(0).unwrap();
+    }
+
+    fn mouse_callback(event: i32, x: i32, y: i32, _flags: i32) {
+        if event == highgui::EVENT_LBUTTONDOWN {}
     }
 }
 

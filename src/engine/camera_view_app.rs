@@ -10,7 +10,7 @@ impl CameraViewApp {
         Self { opencv_window }
     }
 
-    pub fn display_pixels(&self, pixels: Vec<u8>, window_height: usize) {
-        self.opencv_window.display_pixels(pixels, window_height);
+    pub fn capture_clicked_points(&self, pixels: Vec<u8>, window_height: usize) {
+        self.opencv_window.capture_points(pixels, window_height);
     }
 }
