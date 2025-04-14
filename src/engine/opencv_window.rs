@@ -1,12 +1,20 @@
+use nalgebra_glm as glm;
+
 use std::{str::FromStr, sync};
 
 use opencv::{self, core, highgui, prelude::*};
 
 const ESCAPE_KEY: i32 = 27;
 
+struct Point {
+    pub point: core::Point,
+    pub id: u8,
+    pub color: glm::DVec3,
+}
+
 pub struct OpenCVWindow {
     window_title: String,
-    points: sync::Arc<sync::Mutex<Vec<core::Point>>>,
+    points: sync::Arc<sync::Mutex<Vec<Point>>>,
 }
 
 impl OpenCVWindow {
@@ -65,20 +73,37 @@ impl OpenCVWindow {
         for point in self.points.lock().unwrap().iter() {
             opencv::imgproc::circle(
                 display_img,
-                *point,
+                point.point,
                 5,
-                opencv::core::Scalar::new(0.0, 0.0, 255.0, 0.0),
+                opencv::core::Scalar::new(point.color.x, point.color.y, point.color.z, 0.0),
                 -1,
                 opencv::imgproc::LINE_8,
                 0,
             )
             .unwrap();
+            opencv::imgproc::put_text_def(
+                display_img,
+                point.id.to_string().as_str(),
+                point.point,
+                opencv::imgproc::FONT_HERSHEY_DUPLEX,
+                1.0,
+                opencv::core::Scalar::new(255.0, 255.0, 255.0, 0.0),
+            )
+            .unwrap();
         }
     }
 
-    fn mouse_callback(event: i32, x: i32, y: i32, _flags: i32, points: &mut Vec<core::Point>) {
+    fn mouse_callback(event: i32, x: i32, y: i32, _flags: i32, points: &mut Vec<Point>) {
+        let id = points.len() as u8;
+        let r = if id % 3 == 0 { 255.0 } else { 0.0 };
+        let g = if id % 3 == 1 { 255.0 } else { 0.0 };
+        let b = if id % 3 == 2 { 255.0 } else { 0.0 };
         if event == highgui::EVENT_LBUTTONDOWN {
-            points.push(core::Point::new(x, y));
+            points.push(Point {
+                point: core::Point::new(x, y),
+                id,
+                color: glm::vec3(b, g, r),
+            });
         }
     }
 }
