@@ -1,12 +1,12 @@
-use crate::engine;
+use crate::engine::camera_view;
 
 pub struct CameraViewApp {
-    opencv_window: engine::OpenCVWindow,
+    opencv_window: camera_view::OpenCVWindow,
 }
 
 impl CameraViewApp {
     pub fn new() -> Self {
-        let opencv_window = engine::OpenCVWindow::default();
+        let opencv_window = camera_view::OpenCVWindow::default();
         Self { opencv_window }
     }
 

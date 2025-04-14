@@ -1,23 +1,20 @@
 use camera::Camera;
-use camera_view_app::CameraViewApp;
 pub use engine::Engine;
 use engine_context::EngineContext;
 use glfw_context::GLFWContext;
 use input_system::InputSystem;
 use models::Terrain;
-use opencv_window::OpenCVWindow;
 use renderers::TerrainRenderer;
 use scene::Scene;
 use window::Window;
 
 mod camera;
-mod camera_view_app;
+mod camera_view;
 mod engine;
 mod engine_context;
 mod glfw_context;
 mod input_system;
 mod models;
-mod opencv_window;
 mod opengl;
 mod renderers;
 mod scene;
