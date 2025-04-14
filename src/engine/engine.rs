@@ -1,9 +1,9 @@
-use crate::engine;
+use crate::engine::{self, camera_view};
 
 pub struct Engine {
     context: engine::EngineContext,
     camera: engine::Camera,
-    camera_view_application: engine::CameraViewApp,
+    camera_view_application: camera_view::CameraViewApp,
 }
 
 impl Engine {
@@ -11,7 +11,7 @@ impl Engine {
         Self {
             context: engine::EngineContext::new("DEM Viewer", 800, 600),
             camera: engine::Camera::default(),
-            camera_view_application: engine::CameraViewApp::new(),
+            camera_view_application: camera_view::CameraViewApp::new(),
         }
     }
 
@@ -45,7 +45,8 @@ impl Engine {
                 == glfw::Action::Press
             {
                 let pixel_data = scene.take_screenshot(&self.camera);
-                self.camera_view_application.capture_clicked_points(pixel_data, 600);
+                self.camera_view_application
+                    .capture_clicked_points(pixel_data, 600);
             }
 
             scene.render_picking_frame(&self.camera);

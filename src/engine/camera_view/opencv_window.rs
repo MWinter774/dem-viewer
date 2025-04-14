@@ -4,17 +4,13 @@ use std::{str::FromStr, sync};
 
 use opencv::{self, core, highgui, prelude::*};
 
-const ESCAPE_KEY: i32 = 27;
+use crate::engine::camera_view;
 
-pub struct Point {
-    pub point: core::Point,
-    pub id: u8,
-    pub color: glm::DVec3,
-}
+const ESCAPE_KEY: i32 = 27;
 
 pub struct OpenCVWindow {
     window_title: String,
-    points: sync::Arc<sync::Mutex<Vec<Point>>>,
+    points: sync::Arc<sync::Mutex<Vec<camera_view::CameraViewPoint>>>,
 }
 
 impl OpenCVWindow {
@@ -44,7 +40,7 @@ impl OpenCVWindow {
         highgui::destroy_window(&self.window_title).unwrap();
     }
 
-    pub fn get_points(&self) -> &sync::Arc<sync::Mutex<Vec<Point>>> {
+    pub fn get_points(&self) -> &sync::Arc<sync::Mutex<Vec<camera_view::CameraViewPoint>>> {
         &self.points
     }
 
@@ -97,14 +93,21 @@ impl OpenCVWindow {
         }
     }
 
-    fn mouse_callback(event: i32, x: i32, y: i32, _flags: i32, points: &mut Vec<Point>) {
+    fn mouse_callback(
+        event: i32,
+        x: i32,
+        y: i32,
+        _flags: i32,
+        points: &mut Vec<camera_view::CameraViewPoint>,
+    ) {
         let id = points.len() as u8;
         if event == highgui::EVENT_LBUTTONDOWN {
-            points.push(Point {
+            let p = camera_view::CameraViewPoint {
                 point: core::Point::new(x, y),
                 id,
                 color: glm::DVec3::new_random() * 255.0,
-            });
+            };
+            points.push(p);
         }
     }
 }
