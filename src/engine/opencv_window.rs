@@ -1,4 +1,4 @@
-use std::{cell, rc, str::FromStr, sync};
+use std::{str::FromStr, sync};
 
 use opencv::{self, core, highgui, prelude::*};
 
@@ -26,7 +26,7 @@ impl OpenCVWindow {
         loop {
             self.draw_points(&mut image);
             highgui::imshow(&self.window_title, &image).unwrap();
-            
+
             let key = highgui::wait_key(20).unwrap();
             if key == ESCAPE_KEY {
                 break;
