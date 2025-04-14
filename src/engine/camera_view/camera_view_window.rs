@@ -7,6 +7,7 @@ use opencv::{self, core, highgui, prelude::*};
 use crate::engine::camera_view;
 
 const ESCAPE_KEY: i32 = 27;
+const MIN_NUM_OF_POINTS: usize = 4;
 
 pub struct CameraViewWindow {
     window_title: String,
@@ -23,6 +24,7 @@ impl CameraViewWindow {
 
     pub fn capture_points(&self, pixels: Vec<u8>, window_height: usize) {
         let mut image = self.pixels_to_image(pixels, window_height);
+        self.display_info_on_image(&mut image);
 
         highgui::named_window(&self.window_title, highgui::WINDOW_AUTOSIZE).unwrap();
         self.register_mouse_callback();
@@ -33,6 +35,11 @@ impl CameraViewWindow {
 
             let key = highgui::wait_key(20).unwrap();
             if key == ESCAPE_KEY {
+                // User needs to select at least MIN_NUM_OF_POINTS
+                if self.points.lock().unwrap().len() < MIN_NUM_OF_POINTS {
+                    self.display_error_on_image(&mut image);
+                    continue;
+                }
                 break;
             }
         }
@@ -91,6 +98,40 @@ impl CameraViewWindow {
             )
             .unwrap();
         }
+    }
+
+    fn display_error_on_image(&self, img: &mut core::Mat) {
+        let img_backup = img.clone();
+        opencv::imgproc::put_text(
+            img,
+            "You must select at least 4 points!",
+            core::Point::new(0, 100),
+            opencv::imgproc::FONT_HERSHEY_TRIPLEX,
+            1.3,
+            opencv::core::Scalar::new(0.0, 0.0, 255.0, 0.0),
+            2,
+            opencv::imgproc::LINE_4,
+            false,
+        )
+        .unwrap();
+        highgui::imshow(&self.window_title, img).unwrap();
+        highgui::wait_key(2000).unwrap();
+        *img = img_backup;
+    }
+    
+    fn display_info_on_image(&self, img: &mut core::Mat) {
+        opencv::imgproc::put_text(
+            img,
+            "Press ESC to exit",
+            core::Point::new(250, 30),
+            opencv::imgproc::FONT_HERSHEY_SIMPLEX,
+            1.0,
+            opencv::core::Scalar::new(255.0, 255.0, 255.0, 0.0),
+            1,
+            opencv::imgproc::LINE_4,
+            false,
+        )
+        .unwrap();
     }
 
     fn mouse_callback(
