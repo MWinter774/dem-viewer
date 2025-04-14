@@ -8,12 +8,12 @@ use crate::engine::camera_view;
 
 const ESCAPE_KEY: i32 = 27;
 
-pub struct OpenCVWindow {
+pub struct CameraViewWindow {
     window_title: String,
     points: sync::Arc<sync::Mutex<Vec<camera_view::CameraViewPoint>>>,
 }
 
-impl OpenCVWindow {
+impl CameraViewWindow {
     pub fn new(window_title: String) -> Self {
         Self {
             window_title,
@@ -112,7 +112,7 @@ impl OpenCVWindow {
     }
 }
 
-impl Default for OpenCVWindow {
+impl Default for CameraViewWindow {
     fn default() -> Self {
         let window_title = String::from_str("Camera view").unwrap();
         Self::new(window_title)
