@@ -6,7 +6,7 @@ use opencv::{self, core, highgui, prelude::*};
 
 const ESCAPE_KEY: i32 = 27;
 
-struct Point {
+pub struct Point {
     pub point: core::Point,
     pub id: u8,
     pub color: glm::DVec3,
@@ -42,6 +42,10 @@ impl OpenCVWindow {
         }
 
         highgui::destroy_window(&self.window_title).unwrap();
+    }
+
+    pub fn get_points(&self) -> &sync::Arc<sync::Mutex<Vec<Point>>> {
+        &self.points
     }
 
     fn pixels_to_image(&self, mut pixels: Vec<u8>, window_height: usize) -> Mat {
@@ -95,14 +99,11 @@ impl OpenCVWindow {
 
     fn mouse_callback(event: i32, x: i32, y: i32, _flags: i32, points: &mut Vec<Point>) {
         let id = points.len() as u8;
-        let r = if id % 3 == 0 { 255.0 } else { 0.0 };
-        let g = if id % 3 == 1 { 255.0 } else { 0.0 };
-        let b = if id % 3 == 2 { 255.0 } else { 0.0 };
         if event == highgui::EVENT_LBUTTONDOWN {
             points.push(Point {
                 point: core::Point::new(x, y),
                 id,
-                color: glm::vec3(b, g, r),
+                color: glm::DVec3::new_random() * 255.0,
             });
         }
     }
