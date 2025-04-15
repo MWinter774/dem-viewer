@@ -2,7 +2,7 @@ use nalgebra_glm as glm;
 
 use crate::{
     engine,
-    engine::{camera_view, models, renderers},
+    engine::{camera_view, epnp, models, renderers},
 };
 
 pub struct Scene {
@@ -11,6 +11,7 @@ pub struct Scene {
     picking_renderer: renderers::PickingRenderer,
     highlight_renderer: renderers::HighlightRenderer,
     screenshot_renderer: renderers::ScreenshotRenderer,
+    epnp_manager: epnp::EPnPManager,
 }
 
 impl Scene {
@@ -28,12 +29,14 @@ impl Scene {
         let picking_renderer =
             renderers::PickingRenderer::new(&terrain, window_width, window_height);
         let screenshot_renderer = renderers::ScreenshotRenderer::new(window_width, window_height);
+        let epnp_manager = epnp::EPnPManager::new();
         Self {
             terrain,
             terrain_renderer,
             picking_renderer,
             highlight_renderer,
             screenshot_renderer,
+            epnp_manager,
         }
     }
 
@@ -92,19 +95,28 @@ impl Scene {
     pub fn render_picking_phase(
         &mut self,
         camera: &engine::Camera,
-        picked_points: &Vec<camera_view::CameraViewPoint>,
     ) {
         self.render_picking_frame(camera);
         let pixel_data = self.read_color_at_pixel(400, 300);
         let (object_index, primitive_id) = (pixel_data.x, pixel_data.z);
         self.render(camera);
-        if object_index != 0 {
+        if object_index != 0
+            && self.epnp_manager.get_real_world_points().len()
+                < self.epnp_manager.get_image_points().len()
+        {
+            // Renders the highlight to be same color as the corresponding image point
             self.render_picking_highlight(
                 camera,
                 primitive_id,
-                &Self::get_opengl_color_from_camera_view_point(&picked_points[0]),
+                &Self::get_opengl_color_from_camera_view_point(
+                    &self.epnp_manager.get_image_points()[self.epnp_manager.get_real_world_points().len()],
+                ),
             );
         }
+    }
+
+    pub fn set_image_points(&mut self, image_points: Vec<camera_view::CameraViewPoint>) {
+        self.epnp_manager.set_image_points(image_points);
     }
 
     fn get_opengl_color_from_camera_view_point(
