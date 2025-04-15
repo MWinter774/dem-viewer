@@ -116,4 +116,23 @@ impl TerrainRenderData {
 
         (vertices, vertices_ids, uv, indices, min_height, max_height)
     }
+
+    pub fn get_vertices_using_primitive_id(&self, primitive_id: usize) -> [f32; 9] {
+        let (idx0, idx1, idx2) = (
+            (self.indices[primitive_id] as usize),
+            (self.indices[primitive_id] + 1) as usize,
+            (self.indices[primitive_id] + 2) as usize,
+        );
+        [
+            self.vertices[idx0],
+            self.vertices[idx0 + 1],
+            self.vertices[idx0 + 2],
+            self.vertices[idx1],
+            self.vertices[idx1 + 1],
+            self.vertices[idx1 + 2],
+            self.vertices[idx2],
+            self.vertices[idx2 + 1],
+            self.vertices[idx2 + 2],
+        ]
+    }
 }
