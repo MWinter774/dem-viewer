@@ -55,6 +55,7 @@ impl Engine {
                     .camera_view_application
                     .capture_clicked_points(pixel_data);
                 scene.set_image_points(picked_points);
+                scene.clear_real_world_points();
                 should_refocus_window = true;
                 picking_phase = true;
             }

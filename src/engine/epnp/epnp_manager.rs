@@ -24,6 +24,9 @@ impl EPnPManager {
     pub fn get_real_world_points(&self) -> &Vec<glm::Vec3> {
         &self.real_world_points
     }
+    pub fn get_image_points_mut(&mut self) -> &mut Vec<glm::Vec3> {
+        &mut self.real_world_points
+    }
     pub fn set_real_world_points(&mut self, real_world_points: Vec<glm::Vec3>) {
         self.real_world_points = real_world_points;
     }

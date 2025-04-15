@@ -128,6 +128,9 @@ impl Scene {
     pub fn set_image_points(&mut self, image_points: Vec<camera_view::CameraViewPoint>) {
         self.epnp_manager.set_image_points(image_points);
     }
+    pub fn clear_real_world_points(&mut self){
+        self.epnp_manager.get_image_points_mut().clear();
+    }
 
     fn pick_real_world_point_using_primitive_id(&self, primitive_id: u32) -> glm::Vec3 {
         let v = self
