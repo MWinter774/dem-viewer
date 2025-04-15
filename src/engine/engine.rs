@@ -29,7 +29,6 @@ impl Engine {
 
         let mut should_refocus_window = false;
         let mut picking_phase = false;
-        let mut picked_points: Vec<camera_view::CameraViewPoint> = Vec::new();
         while !window_should_close {
             if should_refocus_window {
                 self.context.highlight_window();
@@ -52,7 +51,7 @@ impl Engine {
                 == glfw::Action::Press
             {
                 let pixel_data = scene.take_screenshot(&self.camera);
-                picked_points = self
+                let picked_points = self
                     .camera_view_application
                     .capture_clicked_points(pixel_data);
                 scene.set_image_points(picked_points);
