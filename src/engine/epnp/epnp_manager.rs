@@ -27,4 +27,10 @@ impl EPnPManager {
     pub fn set_real_world_points(&mut self, real_world_points: Vec<glm::Vec3>) {
         self.real_world_points = real_world_points;
     }
+
+    // Returns true if there is equal amount of real world points to image points
+    pub fn add_real_world_points(&mut self, real_world_point: glm::Vec3) -> bool {
+        self.real_world_points.push(real_world_point);
+        self.real_world_points.len() == self.image_points.len()
+    }
 }
