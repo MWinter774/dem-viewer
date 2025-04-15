@@ -1,4 +1,4 @@
-use crate::engine::{self, opengl, renderers};
+use crate::engine::opengl;
 
 pub struct ScreenshotRenderer {
     fbo: opengl::Framebuffer,
@@ -21,6 +21,7 @@ impl ScreenshotRenderer {
                 panic!("Error creating framebuffer for screenshots!");
             }
         }
+        fbo.unbind_framebuffer();
 
         Self {
             fbo,
