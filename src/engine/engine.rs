@@ -55,12 +55,13 @@ impl Engine {
                 picked_points = self
                     .camera_view_application
                     .capture_clicked_points(pixel_data);
+                scene.set_image_points(picked_points);
                 should_refocus_window = true;
                 picking_phase = true;
             }
 
             if picking_phase {
-                scene.render_picking_phase(&self.camera, &picked_points);
+                scene.render_picking_phase(&self.camera);
             } else {
                 scene.render(&self.camera);
             }
