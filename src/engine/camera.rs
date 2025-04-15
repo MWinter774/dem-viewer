@@ -120,6 +120,10 @@ impl Camera {
         }
         is_updated
     }
+
+    pub fn get_position(&self) -> &glm::Vec3 {
+        &self.position
+    }
 }
 
 impl Default for Camera {
