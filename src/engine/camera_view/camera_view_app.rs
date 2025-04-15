@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use crate::engine::camera_view;
+use crate::engine::{camera_view, epnp};
 
 pub struct CameraViewApp {
     camera_view_window: camera_view::CameraViewWindow,
@@ -16,7 +16,7 @@ impl CameraViewApp {
         Self { camera_view_window }
     }
 
-    pub fn capture_clicked_points(&self, pixels: Vec<u8>) -> Vec<camera_view::CameraViewPoint> {
+    pub fn capture_clicked_points(&self, pixels: Vec<u8>) -> Vec<epnp::EPnPPicturePoint> {
         self.camera_view_window.capture_points(pixels)
     }
 }

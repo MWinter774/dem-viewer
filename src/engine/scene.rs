@@ -5,6 +5,8 @@ use crate::{
     engine::{camera_view, epnp, models, renderers},
 };
 
+use super::epnp::EPnPRealWorldPoint;
+
 pub struct Scene {
     terrain: models::Terrain,
     terrain_renderer: renderers::TerrainRenderer,
@@ -80,6 +82,21 @@ impl Scene {
         );
     }
 
+    pub fn render_picked_points(&mut self, camera: &engine::Camera) {
+        for picked_point in self.epnp_manager.get_real_world_points() {
+            self.highlight_renderer.render_highlight_on_terrain(
+                &self.terrain,
+                &(camera.get_pv_matrix()
+                    * self
+                        .terrain
+                        .get_terrain_model_position_data()
+                        .get_model_matrix()),
+                picked_point.primitive_id,
+                &picked_point.color,
+            );
+        }
+    }
+
     pub fn take_screenshot(&mut self, camera: &engine::Camera) -> Vec<u8> {
         self.screenshot_renderer.start_record_screenshot();
         self.render(camera);
@@ -108,17 +125,20 @@ impl Scene {
                 < self.epnp_manager.get_image_points().len()
         {
             // Renders the highlight to be same color as the corresponding image point
-            self.render_picking_highlight(
-                camera,
-                primitive_id,
-                &self.epnp_manager.get_image_points()
-                    [self.epnp_manager.get_real_world_points().len()]
-                .opengl_color
-                .clone(),
-            );
+            let highlight_color = &self.epnp_manager.get_image_points()
+                [self.epnp_manager.get_real_world_points().len()]
+            .opengl_color
+            .clone();
+            self.render_picking_highlight(camera, primitive_id, highlight_color);
+
+            self.render_picked_points(camera);
 
             if should_pick_point {
-                let real_world_point = self.pick_real_world_point_using_primitive_id(primitive_id);
+                let real_world_point = EPnPRealWorldPoint {
+                    point: self.pick_real_world_point_using_primitive_id(primitive_id),
+                    color: highlight_color.clone(),
+                    primitive_id,
+                };
                 need_more_real_world_points =
                     !self.epnp_manager.add_real_world_points(real_world_point);
             }
@@ -126,10 +146,10 @@ impl Scene {
         need_more_real_world_points
     }
 
-    pub fn set_image_points(&mut self, image_points: Vec<camera_view::CameraViewPoint>) {
+    pub fn set_image_points(&mut self, image_points: Vec<epnp::EPnPPicturePoint>) {
         self.epnp_manager.set_image_points(image_points);
     }
-    pub fn clear_real_world_points(&mut self){
+    pub fn clear_real_world_points(&mut self) {
         self.epnp_manager.get_image_points_mut().clear();
     }
 

@@ -3,7 +3,7 @@ use nalgebra_glm as glm;
 use opencv::core;
 
 #[derive(Debug, Copy, Clone)]
-pub struct CameraViewPoint {
+pub struct EPnPPicturePoint {
     pub point: core::Point,
     pub id: u8,
     pub opencv_color: glm::DVec3,

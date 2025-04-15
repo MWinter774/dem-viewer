@@ -5,14 +5,14 @@ use nalgebra_glm as glm;
 use opencv::{self, core, highgui, prelude::*};
 use std::sync;
 
-use crate::engine::camera_view;
+use crate::engine::epnp;
 
 const ESCAPE_KEY: i32 = 27;
 const MIN_NUM_OF_POINTS: usize = 4;
 
 pub struct CameraViewWindow {
     window_title: String,
-    points: sync::Arc<sync::Mutex<Vec<camera_view::CameraViewPoint>>>,
+    points: sync::Arc<sync::Mutex<Vec<epnp::EPnPPicturePoint>>>,
     window_width: usize,
     window_height: usize,
 }
@@ -27,7 +27,7 @@ impl CameraViewWindow {
         }
     }
 
-    pub fn capture_points(&self, pixels: Vec<u8>) -> Vec<camera_view::CameraViewPoint> {
+    pub fn capture_points(&self, pixels: Vec<u8>) -> Vec<epnp::EPnPPicturePoint> {
         self.points.lock().unwrap().clear();
 
         let mut image = self.pixels_to_image(pixels);
@@ -51,7 +51,7 @@ impl CameraViewWindow {
                 break;
             }
         }
-        let mut selected_points = Vec::<camera_view::CameraViewPoint>::new();
+        let mut selected_points = Vec::<epnp::EPnPPicturePoint>::new();
         for p in self.points.lock().unwrap().iter() {
             selected_points.push(*p);
         }
@@ -89,7 +89,12 @@ impl CameraViewWindow {
                 display_img,
                 point.point,
                 5,
-                opencv::core::Scalar::new(point.opencv_color.x, point.opencv_color.y, point.opencv_color.z, 0.0),
+                opencv::core::Scalar::new(
+                    point.opencv_color.x,
+                    point.opencv_color.y,
+                    point.opencv_color.z,
+                    0.0,
+                ),
                 -1,
                 opencv::imgproc::LINE_8,
                 0,
@@ -159,7 +164,7 @@ impl CameraViewWindow {
         x: i32,
         y: i32,
         _flags: i32,
-        points: &mut Vec<camera_view::CameraViewPoint>,
+        points: &mut Vec<epnp::EPnPPicturePoint>,
     ) {
         let id = points.len() as u8;
         if event == highgui::EVENT_LBUTTONDOWN {
@@ -169,7 +174,7 @@ impl CameraViewWindow {
                 (opencv_color.y / 255.0) as f32,
                 (opencv_color.x / 255.0) as f32,
             );
-            let p = camera_view::CameraViewPoint {
+            let p = epnp::EPnPPicturePoint {
                 point: core::Point::new(x, y),
                 id,
                 opencv_color,
