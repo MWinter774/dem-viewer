@@ -92,7 +92,12 @@ impl Scene {
         self.picking_renderer.read_pixel_at(x, y)
     }
 
-    pub fn render_picking_phase(&mut self, camera: &engine::Camera, should_pick_point: bool) {
+    pub fn render_picking_phase(
+        &mut self,
+        camera: &engine::Camera,
+        should_pick_point: bool,
+    ) -> bool {
+        let mut need_more_real_world_points = true;
         self.render_picking_frame(camera);
         let pixel_data = self.read_color_at_pixel(400, 300);
         let (object_index, primitive_id) = (pixel_data.x, pixel_data.z);
@@ -112,9 +117,12 @@ impl Scene {
             );
 
             if should_pick_point {
-                let _p = self.pick_real_world_point_using_primitive_id(primitive_id);
+                let real_world_point = self.pick_real_world_point_using_primitive_id(primitive_id);
+                need_more_real_world_points =
+                    !self.epnp_manager.add_real_world_points(real_world_point);
             }
         }
+        need_more_real_world_points
     }
 
     pub fn set_image_points(&mut self, image_points: Vec<camera_view::CameraViewPoint>) {

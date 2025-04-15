@@ -60,7 +60,10 @@ impl Engine {
             }
 
             if picking_phase {
-                scene.render_picking_phase(&self.camera, frame_data.input_system.mouse.is_left_mouse_button_pressed());
+                picking_phase = scene.render_picking_phase(
+                    &self.camera,
+                    frame_data.input_system.mouse.is_left_mouse_button_clicked(),
+                );
             } else {
                 scene.render(&self.camera);
             }
