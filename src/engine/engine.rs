@@ -28,6 +28,7 @@ impl Engine {
         let mut scene = engine::Scene::new("DEM\\1.tif", "textures\\gray.jpeg", 800, 600);
 
         let mut should_refocus_window = false;
+        let mut picking_phase = false;
         while !window_should_close {
             if should_refocus_window {
                 self.context.highlight_window();
@@ -53,14 +54,20 @@ impl Engine {
                 self.camera_view_application
                     .capture_clicked_points(pixel_data);
                 should_refocus_window = true;
+                picking_phase = true;
             }
 
-            scene.render_picking_frame(&self.camera);
-            let pixel_data = scene.read_color_at_pixel(400, 300);
-            let (object_index, primitive_id) = (pixel_data.x, pixel_data.z);
-            scene.render(&self.camera);
-            if object_index != 0 {
-                scene.render_picking_highlight(&self.camera, primitive_id);
+            if picking_phase {
+                scene.render_picking_frame(&self.camera);
+                let pixel_data = scene.read_color_at_pixel(400, 300);
+                let (object_index, primitive_id) = (pixel_data.x, pixel_data.z);
+                scene.render(&self.camera);
+                if object_index != 0 {
+                    scene.render_picking_highlight(&self.camera, primitive_id);
+                }
+            }
+            else {
+                scene.render(&self.camera);
             }
 
             if frame_data
