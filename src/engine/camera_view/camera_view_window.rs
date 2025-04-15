@@ -27,7 +27,7 @@ impl CameraViewWindow {
         }
     }
 
-    pub fn capture_points(&self, pixels: Vec<u8>) {
+    pub fn capture_points(&self, pixels: Vec<u8>) -> Vec<camera_view::CameraViewPoint> {
         self.points.lock().unwrap().clear();
         
         let mut image = self.pixels_to_image(pixels);
@@ -51,10 +51,12 @@ impl CameraViewWindow {
                 break;
             }
         }
-    }
+        let mut selected_points = Vec::<camera_view::CameraViewPoint>::new();
+        for p in self.points.lock().unwrap().iter() {
+            selected_points.push(*p);
+        }
+        selected_points
 
-    pub fn get_points(&self) -> &sync::Arc<sync::Mutex<Vec<camera_view::CameraViewPoint>>> {
-        &self.points
     }
 
     fn pixels_to_image(&self, mut pixels: Vec<u8>) -> Mat {

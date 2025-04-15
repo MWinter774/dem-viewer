@@ -17,6 +17,6 @@ impl CameraViewApp {
     }
 
     pub fn capture_clicked_points(&self, pixels: Vec<u8>) {
-        self.camera_view_window.capture_points(pixels);
+        let _selected_points = self.camera_view_window.capture_points(pixels);        
     }
 }
