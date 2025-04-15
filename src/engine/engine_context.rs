@@ -45,7 +45,7 @@ impl EngineContext {
     }
 
     pub fn next_frame(&mut self) -> FrameData<'_> {
-        self.delta_time = self.glfw_context.get_time() - self.delta_time;
+        self.delta_time = (self.glfw_context.get_time() - self.delta_time).min(1.3);
         self.swap_buffers_and_poll_events();
 
         let messages = self.flush_messages();
