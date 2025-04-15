@@ -2,7 +2,7 @@ use nalgebra_glm as glm;
 
 use crate::{
     engine,
-    engine::{models, renderers, camera_view},
+    engine::{camera_view, models, renderers},
 };
 
 pub struct Scene {
@@ -59,7 +59,12 @@ impl Scene {
         );
     }
 
-    pub fn render_picking_highlight(&mut self, camera: &engine::Camera, primitive_id: u32, picked_points: &Vec<camera_view::CameraViewPoint>) {
+    pub fn render_picking_highlight(
+        &mut self,
+        camera: &engine::Camera,
+        primitive_id: u32,
+        highlight_color: &glm::Vec3,
+    ) {
         self.highlight_renderer.render_highlight_on_terrain(
             &self.terrain,
             &(camera.get_pv_matrix()
@@ -68,7 +73,7 @@ impl Scene {
                     .get_terrain_model_position_data()
                     .get_model_matrix()),
             primitive_id,
-            picked_points,
+            highlight_color,
         );
     }
 
@@ -82,5 +87,33 @@ impl Scene {
 
     pub fn read_color_at_pixel(&self, x: gl::types::GLint, y: gl::types::GLint) -> glm::UVec3 {
         self.picking_renderer.read_pixel_at(x, y)
+    }
+
+    pub fn render_picking_phase(
+        &mut self,
+        camera: &engine::Camera,
+        picked_points: &Vec<camera_view::CameraViewPoint>,
+    ) {
+        self.render_picking_frame(camera);
+        let pixel_data = self.read_color_at_pixel(400, 300);
+        let (object_index, primitive_id) = (pixel_data.x, pixel_data.z);
+        self.render(camera);
+        if object_index != 0 {
+            self.render_picking_highlight(
+                camera,
+                primitive_id,
+                &Self::get_opengl_color_from_camera_view_point(&picked_points[0]),
+            );
+        }
+    }
+
+    fn get_opengl_color_from_camera_view_point(
+        camera_view_point: &camera_view::CameraViewPoint,
+    ) -> glm::Vec3 {
+        glm::Vec3::new(
+            (camera_view_point.color.z / 255.0) as f32,
+            (camera_view_point.color.y / 255.0) as f32,
+            (camera_view_point.color.x / 255.0) as f32,
+        )
     }
 }
