@@ -29,7 +29,7 @@ impl CameraViewWindow {
 
     pub fn capture_points(&self, pixels: Vec<u8>) -> Vec<camera_view::CameraViewPoint> {
         self.points.lock().unwrap().clear();
-        
+
         let mut image = self.pixels_to_image(pixels);
         self.display_info_on_image(&mut image);
 
@@ -56,7 +56,6 @@ impl CameraViewWindow {
             selected_points.push(*p);
         }
         selected_points
-
     }
 
     fn pixels_to_image(&self, mut pixels: Vec<u8>) -> Mat {

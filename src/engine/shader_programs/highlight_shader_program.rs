@@ -5,6 +5,7 @@ pub struct HighlightShaderProgram {
     shader_program: opengl::ShaderProgram,
     vertex_attrib_pointer: opengl::VertexAttributePointer,
     mvp_uniform_variable: std::rc::Rc<opengl::UniformVariable>,
+    highlight_color_uniform_variable: std::rc::Rc<opengl::UniformVariable>,
 }
 
 impl HighlightShaderProgram {
@@ -20,10 +21,16 @@ impl HighlightShaderProgram {
         );
         let mvp_uniform_variable =
             std::rc::Rc::clone(&shader_program.get_uniform_variable("MVP").unwrap());
+        let highlight_color_uniform_variable = std::rc::Rc::clone(
+            &shader_program
+                .get_uniform_variable("highlightColor")
+                .unwrap(),
+        );
         Self {
             shader_program,
             vertex_attrib_pointer,
             mvp_uniform_variable,
+            highlight_color_uniform_variable,
         }
     }
 
@@ -40,5 +47,9 @@ impl HighlightShaderProgram {
     pub fn set_mvp_uniform_variable(&mut self, mvp_matrix: &glm::Mat4) {
         self.shader_program
             .set_uniform_variable_matrix_4fv(&self.mvp_uniform_variable, mvp_matrix);
+    }
+    pub fn set_highlight_color_uniform_variable(&mut self, highlight_color: &glm::Vec3) {
+        self.shader_program
+            .set_uniform_variable_3f(&self.highlight_color_uniform_variable, highlight_color);
     }
 }

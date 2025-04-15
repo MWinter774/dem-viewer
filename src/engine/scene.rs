@@ -2,7 +2,7 @@ use nalgebra_glm as glm;
 
 use crate::{
     engine,
-    engine::{models, renderers},
+    engine::{models, renderers, camera_view},
 };
 
 pub struct Scene {
@@ -59,7 +59,7 @@ impl Scene {
         );
     }
 
-    pub fn render_picking_highlight(&mut self, camera: &engine::Camera, primitive_id: u32) {
+    pub fn render_picking_highlight(&mut self, camera: &engine::Camera, primitive_id: u32, picked_points: &Vec<camera_view::CameraViewPoint>) {
         self.highlight_renderer.render_highlight_on_terrain(
             &self.terrain,
             &(camera.get_pv_matrix()
@@ -68,6 +68,7 @@ impl Scene {
                     .get_terrain_model_position_data()
                     .get_model_matrix()),
             primitive_id,
+            picked_points,
         );
     }
 

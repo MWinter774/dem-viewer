@@ -1,4 +1,4 @@
-use crate::engine::{models, shader_programs};
+use crate::engine::{camera_view, models, shader_programs};
 use nalgebra_glm as glm;
 
 pub struct HighlightRenderer {
@@ -23,12 +23,18 @@ impl HighlightRenderer {
         terrain: &models::Terrain,
         mvp_matrix: &glm::Mat4,
         primitive_id: u32,
+        picked_points: &Vec<camera_view::CameraViewPoint>,
     ) {
         self.highlight_shader_program.use_program();
-        terrain.get_terrain_opengl_object().bind_vao(); 
+        terrain.get_terrain_opengl_object().bind_vao();
 
         self.highlight_shader_program
             .set_mvp_uniform_variable(mvp_matrix);
+
+        self.highlight_shader_program
+            .set_highlight_color_uniform_variable(&Self::get_opengl_color_from_camera_view_point(
+                &picked_points[0],
+            ));
 
         unsafe {
             gl::Clear(gl::DEPTH_BUFFER_BIT);
@@ -40,5 +46,15 @@ impl HighlightRenderer {
                 0,
             );
         }
+    }
+
+    fn get_opengl_color_from_camera_view_point(
+        camera_view_point: &camera_view::CameraViewPoint,
+    ) -> glm::Vec3 {
+        glm::Vec3::new(
+            (camera_view_point.color.z / 255.0) as f32,
+            (camera_view_point.color.y / 255.0) as f32,
+            (camera_view_point.color.x / 255.0) as f32,
+        )
     }
 }
