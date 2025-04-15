@@ -7,11 +7,17 @@ static mut Y_OFFSET: f64 = 0.0;
 static mut MOUSE_MOVED: bool = false;
 static mut LEFT_MOUSE_BUTTON_PRESSED: bool = false;
 
-pub struct Mouse {}
+use crate::engine::input_system;
+
+pub struct Mouse {
+    mouse_click_detector: input_system::MouseClickDetector,
+}
 
 impl Mouse {
-    pub fn new() -> Self {
-        Self {}
+    pub fn new(mouse_click_detector: input_system::MouseClickDetector) -> Self {
+        Self {
+            mouse_click_detector,
+        }
     }
 
     pub fn get_delta_movement(&self) -> (f64, f64) {
@@ -31,6 +37,10 @@ impl Mouse {
 
     pub fn is_left_mouse_button_pressed(&self) -> bool {
         unsafe { LEFT_MOUSE_BUTTON_PRESSED }
+    }
+
+    pub fn is_left_mouse_button_clicked(&self) -> bool {
+        self.mouse_click_detector.is_left_mouse_button_clicked()
     }
 }
 

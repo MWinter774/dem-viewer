@@ -1,9 +1,8 @@
-use crate::engine;
+use crate::engine::{self, input_system};
 
 pub struct FrameData<'a> {
     pub delta_time: f64,
     pub input_system: engine::InputSystem<'a>,
-    pub messages: glfw::FlushedMessages<'a, (f64, glfw::WindowEvent)>,
 }
 
 pub struct EngineContext {
@@ -28,8 +27,8 @@ impl EngineContext {
         self.window.update_framebuffer_size();
     }
 
-    pub fn get_input_sytem(&self) -> engine::input_system::InputSystem<'_> {
-        self.window.get_input_sytem()
+    pub fn get_input_sytem(&self, mouse_click_detector: input_system::MouseClickDetector) -> engine::input_system::InputSystem<'_> {
+        self.window.get_input_sytem(mouse_click_detector)
     }
 
     fn swap_buffers_and_poll_events(&mut self) {
@@ -49,10 +48,20 @@ impl EngineContext {
         self.delta_time = self.glfw_context.get_time() - self.delta_time;
         self.swap_buffers_and_poll_events();
 
+        let messages = self.flush_messages();
+        let mut mouse_click_detector = input_system::MouseClickDetector::new();
+        for (_, e) in messages {
+            match e {
+                glfw::WindowEvent::MouseButton(mouse_button, action, modifiers) => {
+                    mouse_click_detector.update(mouse_button, action, modifiers);
+                }
+                _ => {}
+            }
+        }
+
         FrameData {
             delta_time: self.delta_time,
-            input_system: self.get_input_sytem(),
-            messages: self.flush_messages(),
+            input_system: self.get_input_sytem(mouse_click_detector),
         }
     }
 
