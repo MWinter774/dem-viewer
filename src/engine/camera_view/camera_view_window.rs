@@ -89,7 +89,7 @@ impl CameraViewWindow {
                 display_img,
                 point.point,
                 5,
-                opencv::core::Scalar::new(point.color.x, point.color.y, point.color.z, 0.0),
+                opencv::core::Scalar::new(point.opencv_color.x, point.opencv_color.y, point.opencv_color.z, 0.0),
                 -1,
                 opencv::imgproc::LINE_8,
                 0,
@@ -163,10 +163,17 @@ impl CameraViewWindow {
     ) {
         let id = points.len() as u8;
         if event == highgui::EVENT_LBUTTONDOWN {
+            let opencv_color = glm::DVec3::new_random() * 255.0;
+            let opengl_color = glm::Vec3::new(
+                (opencv_color.z / 255.0) as f32,
+                (opencv_color.y / 255.0) as f32,
+                (opencv_color.x / 255.0) as f32,
+            );
             let p = camera_view::CameraViewPoint {
                 point: core::Point::new(x, y),
                 id,
-                color: glm::DVec3::new_random() * 255.0,
+                opencv_color,
+                opengl_color,
             };
             points.push(p);
         }

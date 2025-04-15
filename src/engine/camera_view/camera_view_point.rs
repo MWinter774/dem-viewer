@@ -6,5 +6,6 @@ use opencv::core;
 pub struct CameraViewPoint {
     pub point: core::Point,
     pub id: u8,
-    pub color: glm::DVec3,
+    pub opencv_color: glm::DVec3,
+    pub opengl_color: glm::Vec3,
 }

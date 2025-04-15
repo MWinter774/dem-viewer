@@ -92,10 +92,7 @@ impl Scene {
         self.picking_renderer.read_pixel_at(x, y)
     }
 
-    pub fn render_picking_phase(
-        &mut self,
-        camera: &engine::Camera,
-    ) {
+    pub fn render_picking_phase(&mut self, camera: &engine::Camera) {
         self.render_picking_frame(camera);
         let pixel_data = self.read_color_at_pixel(400, 300);
         let (object_index, primitive_id) = (pixel_data.x, pixel_data.z);
@@ -108,24 +105,15 @@ impl Scene {
             self.render_picking_highlight(
                 camera,
                 primitive_id,
-                &Self::get_opengl_color_from_camera_view_point(
-                    &self.epnp_manager.get_image_points()[self.epnp_manager.get_real_world_points().len()],
-                ),
+                &self.epnp_manager.get_image_points()
+                    [self.epnp_manager.get_real_world_points().len()]
+                .opengl_color
+                .clone(),
             );
         }
     }
 
     pub fn set_image_points(&mut self, image_points: Vec<camera_view::CameraViewPoint>) {
         self.epnp_manager.set_image_points(image_points);
-    }
-
-    fn get_opengl_color_from_camera_view_point(
-        camera_view_point: &camera_view::CameraViewPoint,
-    ) -> glm::Vec3 {
-        glm::Vec3::new(
-            (camera_view_point.color.z / 255.0) as f32,
-            (camera_view_point.color.y / 255.0) as f32,
-            (camera_view_point.color.x / 255.0) as f32,
-        )
     }
 }
