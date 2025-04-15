@@ -108,6 +108,12 @@ impl ShaderProgram {
         }
     }
 
+    pub fn set_uniform_variable_3f(&self, uniform_variable: &UniformVariable, val: &glm::Vec3) {
+        unsafe {
+            gl::Uniform3f(uniform_variable.0, val.x, val.y, val.z);
+        }
+    }
+
     /// Returns handle to the uniform variable in the uniform_variables HashMap.
     pub fn get_uniform_variable(
         &mut self,
