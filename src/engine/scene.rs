@@ -116,10 +116,16 @@ impl Scene {
         should_pick_point: bool,
     ) -> bool {
         let mut need_more_real_world_points = true;
+
+        // Gets the exact vertices the user is looking at
         self.render_picking_frame(camera);
         let pixel_data = self.read_color_at_pixel(400, 300);
         let (object_index, primitive_id) = (pixel_data.x, pixel_data.z);
+
+        // Renders scene normally
         self.render(camera);
+
+        // If the user looks at the terrain and didn't choose enough real world points, then render highlight of what he is looking at
         if object_index != 0
             && self.epnp_manager.get_real_world_points().len()
                 < self.epnp_manager.get_image_points().len()
@@ -131,8 +137,10 @@ impl Scene {
             .clone();
             self.render_picking_highlight(camera, primitive_id, highlight_color);
 
+            // If user already chose some points, draw an indicator
             self.render_picked_points(camera);
 
+            // If should_pick_point(Usually is true when the mouse is clicked), then add it to the EPnPManager
             if should_pick_point {
                 let real_world_point = EPnPRealWorldPoint {
                     point: self.pick_real_world_point_using_primitive_id(primitive_id),
