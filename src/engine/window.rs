@@ -42,7 +42,8 @@ impl Window {
             .set_cursor_pos(self.width as f64 / 2.0, self.height as f64 / 2.0);
         self.glfw_window
             .set_cursor_pos_callback(engine::input_system::mouse::mouse_movement_callback);
-        self.glfw_window.set_mouse_button_callback(engine::input_system::mouse::mouse_button_callback);
+        self.glfw_window
+            .set_mouse_button_callback(engine::input_system::mouse::mouse_button_callback);
     }
 
     pub fn swap_buffers(&mut self) {
@@ -65,6 +66,11 @@ impl Window {
 
     pub fn get_input_sytem(&self) -> engine::input_system::InputSystem<'_> {
         engine::InputSystem::new(&self.glfw_window)
+    }
+
+    pub fn highlight(&mut self) {
+        self.glfw_window.make_current();
+        self.glfw_window.focus();
     }
 }
 

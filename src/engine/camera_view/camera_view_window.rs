@@ -1,8 +1,9 @@
+extern crate user32;
+
 use nalgebra_glm as glm;
 
-use std::{str::FromStr, sync};
-
 use opencv::{self, core, highgui, prelude::*};
+use std::sync;
 
 use crate::engine::camera_view;
 
@@ -12,22 +13,29 @@ const MIN_NUM_OF_POINTS: usize = 4;
 pub struct CameraViewWindow {
     window_title: String,
     points: sync::Arc<sync::Mutex<Vec<camera_view::CameraViewPoint>>>,
+    window_width: usize,
+    window_height: usize,
 }
 
 impl CameraViewWindow {
-    pub fn new(window_title: String) -> Self {
+    pub fn new(window_title: String, window_width: usize, window_height: usize) -> Self {
         Self {
             window_title,
             points: sync::Arc::new(sync::Mutex::new(Vec::new())),
+            window_width,
+            window_height,
         }
     }
 
-    pub fn capture_points(&self, pixels: Vec<u8>, window_height: usize) {
-        let mut image = self.pixels_to_image(pixels, window_height);
+    pub fn capture_points(&self, pixels: Vec<u8>) {
+        self.points.lock().unwrap().clear();
+        
+        let mut image = self.pixels_to_image(pixels);
         self.display_info_on_image(&mut image);
 
         highgui::named_window(&self.window_title, highgui::WINDOW_AUTOSIZE).unwrap();
         self.register_mouse_callback();
+        self.bring_to_front();
 
         loop {
             self.draw_points(&mut image);
@@ -43,21 +51,19 @@ impl CameraViewWindow {
                 break;
             }
         }
-
-        highgui::destroy_window(&self.window_title).unwrap();
     }
 
     pub fn get_points(&self) -> &sync::Arc<sync::Mutex<Vec<camera_view::CameraViewPoint>>> {
         &self.points
     }
 
-    fn pixels_to_image(&self, mut pixels: Vec<u8>, window_height: usize) -> Mat {
+    fn pixels_to_image(&self, mut pixels: Vec<u8>) -> Mat {
         // Convert RGB to BGR (OpenCV expects BGR)
         for chunk in pixels.chunks_exact_mut(3) {
             chunk.swap(0, 2); // swap R and B
         }
         let binding = Mat::from_slice(pixels.as_slice()).unwrap();
-        let mat = binding.reshape(3, window_height as i32).unwrap();
+        let mat = binding.reshape(3, self.window_height as i32).unwrap();
 
         let mut flipped = Mat::default();
         opencv::core::flip(&mat, &mut flipped, 0).unwrap();
@@ -105,7 +111,7 @@ impl CameraViewWindow {
         opencv::imgproc::put_text(
             img,
             "You must select at least 4 points!",
-            core::Point::new(0, 100),
+            core::Point::new(0, ((self.window_height as f32) * (100.0 / 600.0)) as i32),
             opencv::imgproc::FONT_HERSHEY_TRIPLEX,
             1.3,
             opencv::core::Scalar::new(0.0, 0.0, 255.0, 0.0),
@@ -118,12 +124,15 @@ impl CameraViewWindow {
         highgui::wait_key(2000).unwrap();
         *img = img_backup;
     }
-    
+
     fn display_info_on_image(&self, img: &mut core::Mat) {
         opencv::imgproc::put_text(
             img,
             "Press ESC to exit",
-            core::Point::new(250, 30),
+            core::Point::new(
+                ((self.window_width as f32) * (250.0 / 800.0)) as i32,
+                ((self.window_height as f32) * (30.0 / 600.0)) as i32,
+            ),
             opencv::imgproc::FONT_HERSHEY_SIMPLEX,
             1.0,
             opencv::core::Scalar::new(255.0, 255.0, 255.0, 0.0),
@@ -132,6 +141,16 @@ impl CameraViewWindow {
             false,
         )
         .unwrap();
+    }
+
+    fn bring_to_front(&self) {
+        let window_name = std::ffi::CString::new(self.window_title.as_str()).unwrap();
+        unsafe {
+            let window_handle = user32::FindWindowA(std::ptr::null(), window_name.as_ptr());
+            if !window_handle.is_null() {
+                user32::SetForegroundWindow(window_handle);
+            }
+        }
     }
 
     fn mouse_callback(
@@ -150,12 +169,5 @@ impl CameraViewWindow {
             };
             points.push(p);
         }
-    }
-}
-
-impl Default for CameraViewWindow {
-    fn default() -> Self {
-        let window_title = String::from_str("Camera view").unwrap();
-        Self::new(window_title)
     }
 }

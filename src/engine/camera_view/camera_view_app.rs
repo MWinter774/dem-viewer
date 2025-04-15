@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use crate::engine::camera_view;
 
 pub struct CameraViewApp {
@@ -5,12 +7,16 @@ pub struct CameraViewApp {
 }
 
 impl CameraViewApp {
-    pub fn new() -> Self {
-        let camera_view_window = camera_view::CameraViewWindow::default();
+    pub fn new(window_width: usize, window_height: usize) -> Self {
+        let camera_view_window = camera_view::CameraViewWindow::new(
+            String::from_str("Camera View").unwrap(),
+            window_width,
+            window_height,
+        );
         Self { camera_view_window }
     }
 
-    pub fn capture_clicked_points(&self, pixels: Vec<u8>, window_height: usize) {
-        self.camera_view_window.capture_points(pixels, window_height);
+    pub fn capture_clicked_points(&self, pixels: Vec<u8>) {
+        self.camera_view_window.capture_points(pixels);
     }
 }

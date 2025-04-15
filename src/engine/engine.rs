@@ -11,7 +11,7 @@ impl Engine {
         Self {
             context: engine::EngineContext::new("DEM Viewer", 800, 600),
             camera: engine::Camera::default(),
-            camera_view_application: camera_view::CameraViewApp::new(),
+            camera_view_application: camera_view::CameraViewApp::new(800, 600),
         }
     }
 
@@ -27,7 +27,12 @@ impl Engine {
 
         let mut scene = engine::Scene::new("DEM\\1.tif", "textures\\gray.jpeg", 800, 600);
 
+        let mut should_refocus_window = false;
         while !window_should_close {
+            if should_refocus_window {
+                self.context.highlight_window();
+                should_refocus_window = false;
+            }
             // Swap the buffers of the opengl window and updates event pipeline
             let frame_data = self.context.next_frame();
             self.camera
@@ -46,7 +51,8 @@ impl Engine {
             {
                 let pixel_data = scene.take_screenshot(&self.camera);
                 self.camera_view_application
-                    .capture_clicked_points(pixel_data, 600);
+                    .capture_clicked_points(pixel_data);
+                should_refocus_window = true;
             }
 
             scene.render_picking_frame(&self.camera);
