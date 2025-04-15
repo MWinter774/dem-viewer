@@ -161,6 +161,10 @@ impl Scene {
         self.epnp_manager.get_image_points_mut().clear();
     }
 
+    pub fn compute_camera_pose(&self) -> glm::Vec3 {
+        self.epnp_manager.compute_camera_pose()
+    }
+
     fn pick_real_world_point_using_primitive_id(&self, primitive_id: u32) -> glm::Vec3 {
         let v = self
             .terrain

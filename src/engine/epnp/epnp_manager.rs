@@ -1,3 +1,5 @@
+use nalgebra_glm as glm;
+
 use crate::engine::epnp;
 
 pub struct EPnPManager {
@@ -33,5 +35,9 @@ impl EPnPManager {
     pub fn add_real_world_points(&mut self, real_world_point: epnp::EPnPRealWorldPoint) -> bool {
         self.real_world_points.push(real_world_point);
         self.real_world_points.len() == self.image_points.len()
+    }
+
+    pub fn compute_camera_pose(&self) -> glm::Vec3 {
+        glm::vec3(0.0, 0.0, 0.0)
     }
 }

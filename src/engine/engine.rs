@@ -59,6 +59,14 @@ impl Engine {
                 should_refocus_window = true;
                 picking_phase = true;
             }
+            if frame_data
+                .input_system
+                .keyboard
+                .get_key_press_state(glfw::Key::C)
+                == glfw::Action::Press
+            {
+                let camera_pose = scene.compute_camera_pose();
+            }
 
             if picking_phase {
                 // If user chose enough real world points, then cease the picking phase
