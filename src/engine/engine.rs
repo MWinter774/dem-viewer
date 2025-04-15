@@ -60,13 +60,7 @@ impl Engine {
             }
 
             if picking_phase {
-                scene.render_picking_frame(&self.camera);
-                let pixel_data = scene.read_color_at_pixel(400, 300);
-                let (object_index, primitive_id) = (pixel_data.x, pixel_data.z);
-                scene.render(&self.camera);
-                if object_index != 0 {
-                    scene.render_picking_highlight(&self.camera, primitive_id, &picked_points);
-                }
+                scene.render_picking_phase(&self.camera, &picked_points);
             } else {
                 scene.render(&self.camera);
             }
