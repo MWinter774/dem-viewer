@@ -92,7 +92,7 @@ impl Scene {
         self.picking_renderer.read_pixel_at(x, y)
     }
 
-    pub fn render_picking_phase(&mut self, camera: &engine::Camera) {
+    pub fn render_picking_phase(&mut self, camera: &engine::Camera, should_pick_point: bool) {
         self.render_picking_frame(camera);
         let pixel_data = self.read_color_at_pixel(400, 300);
         let (object_index, primitive_id) = (pixel_data.x, pixel_data.z);
@@ -110,10 +110,22 @@ impl Scene {
                 .opengl_color
                 .clone(),
             );
+
+            if should_pick_point {
+                let _p = self.pick_real_world_point_using_primitive_id(primitive_id);
+            }
         }
     }
 
     pub fn set_image_points(&mut self, image_points: Vec<camera_view::CameraViewPoint>) {
         self.epnp_manager.set_image_points(image_points);
+    }
+
+    fn pick_real_world_point_using_primitive_id(&self, primitive_id: u32) -> glm::Vec3 {
+        let v = self
+            .terrain
+            .get_terrain_render_data()
+            .get_vertices_using_primitive_id(primitive_id as usize);
+        glm::vec3(v[0], v[1], v[2])
     }
 }
