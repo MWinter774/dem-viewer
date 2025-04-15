@@ -92,6 +92,7 @@ impl Scene {
         self.picking_renderer.read_pixel_at(x, y)
     }
 
+    // Returns true if user picked enough real world points
     pub fn render_picking_phase(
         &mut self,
         camera: &engine::Camera,
