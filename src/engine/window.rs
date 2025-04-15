@@ -1,6 +1,6 @@
 use glfw::{Context, Glfw, GlfwReceiver, PWindow, WindowEvent};
 
-use crate::engine;
+use crate::engine::{self, input_system};
 
 pub struct Window {
     glfw_window: PWindow,
@@ -12,9 +12,10 @@ pub struct Window {
 impl Window {
     pub fn new(glfw_context: &mut Glfw, title: &str, width: u32, height: u32) -> Self {
         // Create a windowed mode window and its OpenGL context
-        let (window, events) = glfw_context
+        let (mut window, events) = glfw_context
             .create_window(width, height, title, glfw::WindowMode::Windowed)
             .expect("Failed to create window.");
+        window.set_mouse_button_polling(true);
 
         Self {
             glfw_window: window,
@@ -64,8 +65,8 @@ impl Window {
         }
     }
 
-    pub fn get_input_sytem(&self) -> engine::input_system::InputSystem<'_> {
-        engine::InputSystem::new(&self.glfw_window)
+    pub fn get_input_sytem(&self, mouse_click_detector: input_system::MouseClickDetector) -> engine::input_system::InputSystem<'_> {
+        engine::InputSystem::new(&self.glfw_window, mouse_click_detector)
     }
 
     pub fn highlight(&mut self) {
