@@ -65,7 +65,7 @@ impl Engine {
                 .get_key_press_state(glfw::Key::C)
                 == glfw::Action::Press
             {
-                let camera_pose = scene.compute_camera_pose();
+                let camera_pose = scene.compute_camera_pose(&self.camera);
             }
 
             if picking_phase {
