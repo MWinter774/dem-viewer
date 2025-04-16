@@ -27,8 +27,12 @@ impl EngineContext {
         self.window.update_framebuffer_size();
     }
 
-    pub fn get_input_sytem(&self, mouse_click_detector: input_system::MouseClickDetector) -> engine::input_system::InputSystem<'_> {
-        self.window.get_input_sytem(mouse_click_detector)
+    pub fn get_input_sytem(
+        &self,
+        mouse_click_detector: input_system::MouseClickDetector,
+        keyboard_press_detector: input_system::KeyboardPressDetector,
+    ) -> engine::input_system::InputSystem<'_> {
+        self.window.get_input_sytem(mouse_click_detector, keyboard_press_detector)
     }
 
     fn swap_buffers_and_poll_events(&mut self) {
@@ -50,10 +54,14 @@ impl EngineContext {
 
         let messages = self.flush_messages();
         let mut mouse_click_detector = input_system::MouseClickDetector::new();
+        let mut keyboard_press_detector = input_system::KeyboardPressDetector::new();
         for (_, e) in messages {
             match e {
                 glfw::WindowEvent::MouseButton(mouse_button, action, modifiers) => {
                     mouse_click_detector.update(mouse_button, action, modifiers);
+                }
+                glfw::WindowEvent::Key(key, scancode, action, modifiers) => {
+                    keyboard_press_detector.update(key, scancode, action, modifiers);
                 }
                 _ => {}
             }
@@ -61,7 +69,7 @@ impl EngineContext {
 
         FrameData {
             delta_time: self.delta_time,
-            input_system: self.get_input_sytem(mouse_click_detector),
+            input_system: self.get_input_sytem(mouse_click_detector, keyboard_press_detector),
         }
     }
 

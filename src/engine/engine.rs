@@ -50,8 +50,7 @@ impl Engine {
             if frame_data
                 .input_system
                 .keyboard
-                .get_key_press_state(glfw::Key::B)
-                == glfw::Action::Press
+                .is_key_pressed(glfw::Key::B)
             {
                 let pixel_data = scene.take_screenshot(&self.camera);
                 let picked_points = self
@@ -66,8 +65,7 @@ impl Engine {
             if frame_data
                 .input_system
                 .keyboard
-                .get_key_press_state(glfw::Key::C)
-                == glfw::Action::Press
+                .is_key_pressed(glfw::Key::C)
             {
                 let _camera_pose = scene.compute_camera_pose(&self.camera);
             }

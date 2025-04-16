@@ -6,9 +6,13 @@ pub struct InputSystem<'a> {
 }
 
 impl<'a> InputSystem<'a> {
-    pub fn new(glfw_window: &'a glfw::PWindow, mouse_click_detector: input_system::MouseClickDetector) -> Self {
+    pub fn new(
+        glfw_window: &'a glfw::PWindow,
+        mouse_click_detector: input_system::MouseClickDetector,
+        keyboard_press_detector: input_system::KeyboardPressDetector,
+    ) -> Self {
         Self {
-            keyboard: input_system::Keyboard::new(glfw_window),
+            keyboard: input_system::Keyboard::new(glfw_window, keyboard_press_detector),
             mouse: input_system::Mouse::new(mouse_click_detector),
         }
     }

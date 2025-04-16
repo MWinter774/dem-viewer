@@ -65,8 +65,12 @@ impl Window {
         }
     }
 
-    pub fn get_input_sytem(&self, mouse_click_detector: input_system::MouseClickDetector) -> engine::input_system::InputSystem<'_> {
-        engine::InputSystem::new(&self.glfw_window, mouse_click_detector)
+    pub fn get_input_sytem(
+        &self,
+        mouse_click_detector: input_system::MouseClickDetector,
+        keyboard_press_detector: input_system::KeyboardPressDetector,
+    ) -> engine::input_system::InputSystem<'_> {
+        engine::InputSystem::new(&self.glfw_window, mouse_click_detector, keyboard_press_detector)
     }
 
     pub fn highlight(&mut self) {
