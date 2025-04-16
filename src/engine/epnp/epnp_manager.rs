@@ -127,7 +127,7 @@ impl EPnPManager {
             *rotation_matrix.at_2d::<f64>(1, 2).unwrap(),
             *rotation_matrix.at_2d::<f64>(2, 0).unwrap(),
             *rotation_matrix.at_2d::<f64>(2, 1).unwrap(),
-            *rotation_matrix.at_2d::<f64>(2, 1).unwrap(),
+            *rotation_matrix.at_2d::<f64>(2, 2).unwrap(),
         );
         let t: glm::DVec3 = glm::vec3(
             *tvec.at::<f64>(0).unwrap(),
