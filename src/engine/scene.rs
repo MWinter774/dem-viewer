@@ -2,7 +2,7 @@ use nalgebra_glm as glm;
 
 use crate::{
     engine,
-    engine::{camera_view, epnp, models, renderers},
+    engine::{epnp, models, renderers},
 };
 
 use super::epnp::EPnPRealWorldPoint;
@@ -161,8 +161,9 @@ impl Scene {
         self.epnp_manager.get_image_points_mut().clear();
     }
 
-    pub fn compute_camera_pose(&self) -> glm::Vec3 {
-        self.epnp_manager.compute_camera_pose()
+    pub fn compute_camera_pose(&self, camera: &engine::Camera) -> glm::Vec3 {
+        self.epnp_manager
+            .compute_camera_pose(camera.get_projection_matrix_object())
     }
 
     fn pick_real_world_point_using_primitive_id(&self, primitive_id: u32) -> glm::Vec3 {

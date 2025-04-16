@@ -39,6 +39,9 @@ impl Camera {
     pub fn get_pv_matrix(&self) -> glm::Mat4 {
         self.projection_matrix.get_matrix() * self.view_matrix.get_matrix()
     }
+    pub fn get_projection_matrix_object(&self) -> &transformations::Projection {
+        &self.projection_matrix
+    }
 
     pub fn update_input(&mut self, input_system: &engine::InputSystem, delta_time: f32) {
         let (is_keyboard_used, is_mouse_moved) = (
