@@ -66,6 +66,8 @@ impl Engine {
                 == glfw::Action::Press
             {
                 let camera_pose = scene.compute_camera_pose(&self.camera);
+                println!("Estimated camera pose: {}", camera_pose);
+                println!("Real camera pose: {}", self.camera.get_position());
             }
 
             if picking_phase {
