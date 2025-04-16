@@ -161,7 +161,7 @@ impl Scene {
         self.epnp_manager.get_image_points_mut().clear();
     }
 
-    pub fn compute_camera_pose(&self, camera: &engine::Camera) -> glm::Vec3 {
+    pub fn compute_camera_pose(&self, camera: &engine::Camera) -> Result<glm::Vec3, &str> {
         self.epnp_manager
             .compute_camera_pose(camera.get_projection_matrix_object())
     }

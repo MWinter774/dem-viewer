@@ -45,12 +45,11 @@ impl EPnPManager {
     pub fn compute_camera_pose(
         &self,
         projection_matrix: &transformations::Projection,
-    ) -> glm::Vec3 {
+    ) -> Result<glm::Vec3, &str> {
         if self.picture_points.len() < 4
             || (self.real_world_points.len() != self.picture_points.len())
         {
-            println!("Select more points!");
-            return glm::vec3(0.0, 0.0, 0.0);
+            return Err("Select more points!");
         }
         let object_points = Self::get_object_points_from_real_world_points(&self.real_world_points);
         let image_points = Self::get_image_points_from_picture_points(&self.picture_points);
@@ -72,7 +71,7 @@ impl EPnPManager {
             calib3d::SOLVEPNP_EPNP,
         )
         .unwrap();
-        Self::rvec_and_tvec_to_real_world_position(&rvec, &tvec)
+        Ok(Self::rvec_and_tvec_to_real_world_position(&rvec, &tvec))
     }
 
     fn get_object_points_from_real_world_points(
