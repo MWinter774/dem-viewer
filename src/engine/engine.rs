@@ -1,3 +1,5 @@
+use nalgebra_glm as glm;
+
 use crate::engine::{self, camera_view};
 
 pub struct Engine {
@@ -29,6 +31,7 @@ impl Engine {
 
         let mut should_refocus_window = false;
         let mut picking_phase = false;
+        let mut real_camera_pose = glm::vec3(0.0, 0.0, 0.0);
         while !window_should_close {
             if should_refocus_window {
                 self.context.highlight_window();
@@ -58,6 +61,7 @@ impl Engine {
                 scene.clear_real_world_points();
                 should_refocus_window = true;
                 picking_phase = true;
+                real_camera_pose = self.camera.get_position().clone();
             }
             if frame_data
                 .input_system
@@ -65,9 +69,7 @@ impl Engine {
                 .get_key_press_state(glfw::Key::C)
                 == glfw::Action::Press
             {
-                let camera_pose = scene.compute_camera_pose(&self.camera);
-                println!("Estimated camera pose: {}", camera_pose);
-                println!("Real camera pose: {}", self.camera.get_position());
+                let _camera_pose = scene.compute_camera_pose(&self.camera);
             }
 
             if picking_phase {
