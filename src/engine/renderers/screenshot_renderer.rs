@@ -3,6 +3,7 @@ use crate::engine::opengl;
 pub struct ScreenshotRenderer {
     fbo: opengl::Framebuffer,
     texture: opengl::Texture,
+    depth_texture: opengl::Texture,
     window_width: usize,
     window_height: usize,
 }
@@ -11,11 +12,15 @@ impl ScreenshotRenderer {
     pub fn new(window_width: usize, window_height: usize) -> Self {
         let fbo = opengl::Framebuffer::new();
         let texture = opengl::Texture::new();
+        let depth_texture = opengl::Texture::new();
 
         fbo.bind_framebuffer();
         texture.bind();
         texture.load_rgb_texture(window_width, window_height);
         texture.attach_color_texture_to_framebuffer();
+        depth_texture.bind();
+        depth_texture.load_depth_texture(window_width, window_height);
+        depth_texture.attach_depth_texture_to_framebuffer();
         unsafe {
             if gl::CheckFramebufferStatus(gl::FRAMEBUFFER) != gl::FRAMEBUFFER_COMPLETE {
                 panic!("Error creating framebuffer for screenshots!");
@@ -26,6 +31,7 @@ impl ScreenshotRenderer {
         Self {
             fbo,
             texture,
+            depth_texture,
             window_width,
             window_height,
         }
@@ -41,7 +47,7 @@ impl ScreenshotRenderer {
                 self.window_height as gl::types::GLsizei,
             );
             gl::ClearColor(0.0, 0.0, 0.5, 1.0);
-            gl::Clear(gl::COLOR_BUFFER_BIT);
+            gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
         }
     }
 
