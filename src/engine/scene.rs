@@ -167,10 +167,20 @@ impl Scene {
     }
 
     fn pick_real_world_point_using_primitive_id(&self, primitive_id: u32) -> glm::Vec3 {
-        let v = self
+        // Get vertex position in mesh coords
+        let mesh_vertex = self
             .terrain
             .get_terrain_render_data()
-            .get_vertices_using_primitive_id(primitive_id as usize);
-        glm::vec3(v[0], v[1], v[2])
+            .get_mesh_vertex_using_primitive_id(primitive_id as usize);
+
+        // Transforms the mesh vertex to real world coords
+        let real_world_vertex = glm::vec4(mesh_vertex.x, mesh_vertex.y, mesh_vertex.z, 1.0);
+        let real_world_vertex = self
+            .terrain
+            .get_terrain_model_position_data()
+            .get_model_matrix()
+            * real_world_vertex;
+
+        real_world_vertex.xyz()
     }
 }

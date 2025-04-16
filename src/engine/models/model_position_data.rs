@@ -13,9 +13,6 @@ impl ModelPositionData {
         rotation_matrix: transformations::Rotation,
         scaling_matrix: transformations::Scaling,
     ) -> Self {
-        let translation_matrix = transformations::Translation::default();
-        let rotation_matrix = transformations::Rotation::default();
-        let scaling_matrix = transformations::Scaling::default();
         Self {
             translation_matrix,
             rotation_matrix,
