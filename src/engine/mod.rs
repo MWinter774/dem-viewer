@@ -1,6 +1,7 @@
 use camera::Camera;
 pub use engine::Engine;
 use engine_context::EngineContext;
+use feature_matching::Views;
 use glfw_context::GLFWContext;
 use input_system::InputSystem;
 use models::Terrain;
@@ -13,6 +14,7 @@ mod camera_view;
 mod engine;
 mod engine_context;
 mod epnp;
+mod feature_matching;
 mod glfw_context;
 mod input_system;
 mod models;

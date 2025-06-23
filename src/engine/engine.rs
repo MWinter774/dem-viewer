@@ -1,6 +1,6 @@
 use nalgebra_glm as glm;
 
-use crate::engine::{self, camera_view};
+use crate::engine::{self, camera_view, feature_matching, transformations::view};
 
 pub struct Engine {
     context: engine::EngineContext,
@@ -32,6 +32,8 @@ impl Engine {
         let mut should_refocus_window = false;
         let mut picking_phase = false;
         let mut real_camera_pose = glm::vec3(0.0, 0.0, 0.0);
+
+        let mut views = feature_matching::Views::new();
         while !window_should_close {
             if should_refocus_window {
                 self.context.highlight_window();
@@ -50,22 +52,25 @@ impl Engine {
             if frame_data
                 .input_system
                 .keyboard
-                .is_key_pressed(glfw::Key::B)
+                .is_key_pressed(glfw::Key::P)
             {
                 let pixel_data = scene.take_screenshot(&self.camera);
                 let picked_points = self
                     .camera_view_application
-                    .capture_clicked_points(pixel_data);
+                    .capture_clicked_points(pixel_data.clone());
                 scene.set_image_points(picked_points);
                 scene.clear_real_world_points();
                 should_refocus_window = true;
                 picking_phase = true;
                 real_camera_pose = self.camera.get_position().clone();
+
+                // Add the new view to the views system
+                views.new_view(&pixel_data, &real_camera_pose);
             }
             if frame_data
                 .input_system
                 .keyboard
-                .is_key_pressed(glfw::Key::C)
+                .is_key_pressed(glfw::Key::B)
             {
                 match scene.compute_camera_pose(&self.camera) {
                     Ok(computed_camera_pose) => {
@@ -96,6 +101,19 @@ impl Engine {
                     &self.camera,
                     frame_data.input_system.mouse.is_left_mouse_button_clicked(),
                 );
+                if false == picking_phase
+                // If finished picking the last point for current view
+                {
+                    match scene.compute_camera_pose(&self.camera) {
+                        Ok(computed_camera_pose) => {
+                            views.update_estimated_camera_position(&computed_camera_pose);
+                            println!("Views count: {}", views.get_num_views());
+                        }
+                        Err(err) => {
+                            println!("{}", err);
+                        }
+                    }
+                }
             } else {
                 scene.render(&self.camera);
             }
