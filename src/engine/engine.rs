@@ -33,7 +33,6 @@ impl Engine {
         let mut picking_phase = false;
         let mut real_camera_pose = glm::vec3(0.0, 0.0, 0.0);
 
-        let mut views = feature_matching::Views::new();
         while !window_should_close {
             if should_refocus_window {
                 self.context.highlight_window();
@@ -65,7 +64,7 @@ impl Engine {
                 real_camera_pose = self.camera.get_position().clone();
 
                 // Add the new view to the views system
-                views.new_view(&pixel_data, &real_camera_pose);
+                scene.add_view_to_feature_matching(&pixel_data, &real_camera_pose);
             }
             if frame_data
                 .input_system
@@ -106,8 +105,10 @@ impl Engine {
                 {
                     match scene.compute_camera_pose(&self.camera) {
                         Ok(computed_camera_pose) => {
-                            views.update_estimated_camera_position(&computed_camera_pose);
-                            println!("Views count: {}", views.get_num_views());
+                            scene.update_estimated_camera_position_for_feature_matching(
+                                &computed_camera_pose,
+                            );
+                            println!("Views count: {}", scene.get_num_view_of_feature_matcher());
                         }
                         Err(err) => {
                             println!("{}", err);

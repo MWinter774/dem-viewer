@@ -1,9 +1,6 @@
 use nalgebra_glm as glm;
 
-use crate::{
-    engine,
-    engine::{epnp, models, renderers},
-};
+use crate::engine::{self, epnp, feature_matching, models, renderers};
 
 use super::epnp::EPnPRealWorldPoint;
 
@@ -14,6 +11,7 @@ pub struct Scene {
     highlight_renderer: renderers::HighlightRenderer,
     screenshot_renderer: renderers::ScreenshotRenderer,
     epnp_manager: epnp::EPnPManager,
+    feature_matcher: feature_matching::FeatureMatcher,
 }
 
 impl Scene {
@@ -32,6 +30,7 @@ impl Scene {
             renderers::PickingRenderer::new(&terrain, window_width, window_height);
         let screenshot_renderer = renderers::ScreenshotRenderer::new(window_width, window_height);
         let epnp_manager = epnp::EPnPManager::new();
+        let feature_matcher = feature_matching::FeatureMatcher::new();
         Self {
             terrain,
             terrain_renderer,
@@ -39,6 +38,7 @@ impl Scene {
             highlight_renderer,
             screenshot_renderer,
             epnp_manager,
+            feature_matcher,
         }
     }
 
@@ -182,5 +182,26 @@ impl Scene {
             * real_world_vertex;
 
         real_world_vertex.xyz()
+    }
+
+    pub fn add_view_to_feature_matching(
+        &mut self,
+        pixel_data: &Vec<u8>,
+        real_camera_position: &glm::Vec3,
+    ) {
+        self.feature_matcher
+            .add_view(pixel_data, real_camera_position);
+    }
+
+    pub fn update_estimated_camera_position_for_feature_matching(
+        &mut self,
+        estimated_camera_position: &glm::Vec3,
+    ) {
+        self.feature_matcher
+            .update_estimated_camera_position(estimated_camera_position);
+    }
+
+    pub fn get_num_view_of_feature_matcher(&self) -> usize {
+        self.feature_matcher.get_num_views()
     }
 }
