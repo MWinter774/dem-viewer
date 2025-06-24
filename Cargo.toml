@@ -7,10 +7,8 @@ edition = "2024"
 gl = "0.14.0"
 glfw = "0.58.0"
 nalgebra-glm = "0.3"
-gdal-win = "*"
 image = "0.25.6"
 opencv = "0.94.4"
 user32-sys = "0.2.0"
-
-[build-dependencies]
-gdal-setup = "*"
+geotiff = "*"
+tiff = "*"
