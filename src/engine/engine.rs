@@ -32,6 +32,7 @@ impl Engine {
         let mut should_refocus_window = false;
         let mut picking_phase = false;
         let mut real_camera_pose = glm::vec3(0.0, 0.0, 0.0);
+        let feature_match = true;
 
         while !window_should_close {
             if should_refocus_window {
@@ -71,25 +72,33 @@ impl Engine {
                 .keyboard
                 .is_key_pressed(glfw::Key::B)
             {
-                match scene.compute_camera_pose(&self.camera) {
-                    Ok(computed_camera_pose) => {
-                        println!(
-                            "Computed camera pose: ({}, {}, {})",
-                            computed_camera_pose.x, computed_camera_pose.y, computed_camera_pose.z
-                        );
-                        println!(
-                            "Real camera pose: ({}, {}, {})",
-                            real_camera_pose.x, real_camera_pose.y, real_camera_pose.z
-                        );
-                        println!(
-                            "Error: {}",
-                            glm::l2_norm(
-                                &(computed_camera_pose.normalize() - real_camera_pose.normalize())
-                            )
-                        );
-                    }
-                    Err(err) => {
-                        println!("{}", err);
+                if feature_match {
+                    let pixel_data = scene.take_screenshot(&self.camera);
+                    scene.feature_match(&pixel_data);
+                } else {
+                    match scene.compute_camera_pose(&self.camera) {
+                        Ok(computed_camera_pose) => {
+                            println!(
+                                "Computed camera pose: ({}, {}, {})",
+                                computed_camera_pose.x,
+                                computed_camera_pose.y,
+                                computed_camera_pose.z
+                            );
+                            println!(
+                                "Real camera pose: ({}, {}, {})",
+                                real_camera_pose.x, real_camera_pose.y, real_camera_pose.z
+                            );
+                            println!(
+                                "Error: {}",
+                                glm::l2_norm(
+                                    &(computed_camera_pose.normalize()
+                                        - real_camera_pose.normalize())
+                                )
+                            );
+                        }
+                        Err(err) => {
+                            println!("{}", err);
+                        }
                     }
                 }
             }

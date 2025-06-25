@@ -30,7 +30,7 @@ impl Scene {
             renderers::PickingRenderer::new(&terrain, window_width, window_height);
         let screenshot_renderer = renderers::ScreenshotRenderer::new(window_width, window_height);
         let epnp_manager = epnp::EPnPManager::new();
-        let feature_matcher = feature_matching::FeatureMatcher::new();
+        let feature_matcher = feature_matching::FeatureMatcher::new(window_width, window_height);
         Self {
             terrain,
             terrain_renderer,
@@ -203,5 +203,9 @@ impl Scene {
 
     pub fn get_num_view_of_feature_matcher(&self) -> usize {
         self.feature_matcher.get_num_views()
+    }
+
+    pub fn feature_match(&self, pixel_data: &Vec<u8>) {
+        let _view = self.feature_matcher.feature_match(&mut pixel_data.clone());
     }
 }
