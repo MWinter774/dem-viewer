@@ -74,7 +74,8 @@ impl Engine {
             {
                 if feature_match {
                     let pixel_data = scene.take_screenshot(&self.camera);
-                    scene.feature_match(&pixel_data);
+                    let camera_position = scene.feature_match(&pixel_data);
+                    println!("{}", camera_position);
                 } else {
                     match scene.compute_camera_pose(&self.camera) {
                         Ok(computed_camera_pose) => {

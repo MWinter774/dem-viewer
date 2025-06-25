@@ -127,7 +127,7 @@ impl Camera {
     pub fn get_position(&self) -> &glm::Vec3 {
         &self.position
     }
-    pub fn set_position(&mut self, position: glm::Vec3){
+    pub fn set_position(&mut self, position: glm::Vec3) {
         self.position = position;
     }
 }
@@ -138,7 +138,7 @@ impl Default for Camera {
             glm::vec3(0.0, 2000.0, 0.0),
             glm::vec3(0.0, 0.0, 1.0),
             glm::vec3(0.0, 1.0, 0.0),
-            1.0,
+            5.0,
         )
     }
 }
