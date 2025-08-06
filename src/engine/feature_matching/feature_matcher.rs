@@ -35,7 +35,13 @@ impl FeatureMatcher {
         self.views.get_num_views()
     }
 
-    pub fn feature_match(&self, pixel_data: &mut Vec<u8>) -> &feature_matching::View {
+    // Returns either:
+    // 1. The view that the feature matching algorithm found the closest to pixel_data
+    // 2. Error if not enough view were picked
+    pub fn feature_match(&self, pixel_data: &mut Vec<u8>) -> Result<&feature_matching::View, &str> {
+        if self.views.get_num_views() == 0 {
+            return Err("You must pick at least 1 view in order to perform feature matching!");
+        }
         let descriptors = self.detect_descriptors(pixel_data);
         let mut max_matches = 0;
         let mut matching_view = &self.views.get_views()[0];
@@ -55,7 +61,7 @@ impl FeatureMatcher {
                 matching_view = view;
             }
         }
-        matching_view
+        Ok(matching_view)
     }
 
     fn pixels_to_image(&self, pixels: &mut Vec<u8>) -> Mat {
