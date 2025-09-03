@@ -1,6 +1,9 @@
 use nalgebra_glm as glm;
 
-use crate::engine::{self, camera_view, feature_matching, transformations::view};
+use crate::engine::{
+    self, camera_view, feature_matching,
+    scene_initializer_for_presentation::SceneInitializerForPresentation, transformations::view,
+};
 
 pub struct Engine {
     context: engine::EngineContext,
@@ -34,6 +37,13 @@ impl Engine {
         let mut real_camera_pose = glm::vec3(0.0, 0.0, 0.0);
         let feature_match = true;
 
+        let is_presenting = true;
+        if is_presenting {
+            engine::SceneInitializerForPresentation::initialize(&mut scene);
+        }
+
+        let mut pixel_data: Vec<u8> = Vec::new();
+        let mut picked_points: Vec<engine::epnp::EPnPPicturePoint> = Vec::new();
         while !window_should_close {
             if should_refocus_window {
                 self.context.highlight_window();
@@ -54,19 +64,38 @@ impl Engine {
                 .keyboard
                 .is_key_pressed(glfw::Key::P)
             {
-                let pixel_data = scene.take_screenshot(&self.camera);
-                let picked_points = self
-                    .camera_view_application
-                    .capture_clicked_points(pixel_data.clone());
-                scene.set_image_points(picked_points);
-                scene.clear_real_world_points();
-                should_refocus_window = true;
-                picking_phase = true;
-                real_camera_pose = self.camera.get_position().clone();
+                // If user didn't finish to pick for a view
+                if picking_phase {
+                    println!("Finish picking for current view!");
+                } else {
+                    pixel_data = scene.take_screenshot(&self.camera);
+                    picked_points = self
+                        .camera_view_application
+                        .capture_clicked_points(pixel_data.clone());
+                    scene.set_image_points(picked_points.clone());
+                    scene.clear_real_world_points();
+                    should_refocus_window = true;
+                    picking_phase = true;
+                    real_camera_pose = self.camera.get_position().clone();
 
-                // Add the new view to the views system
-                scene.add_view_to_feature_matching(&pixel_data, &real_camera_pose);
+                    // Add the new view to the views system
+                    scene.add_view_to_feature_matching(&pixel_data, &real_camera_pose);
+                }
             }
+
+            // If M is pressed, print picked_points, pixel_data and real_camera_pose to a file
+            if frame_data
+                .input_system
+                .keyboard
+                .is_key_pressed(glfw::Key::M)
+            {
+                SceneInitializerForPresentation::save_to_file(
+                    &pixel_data,
+                    &picked_points,
+                    &real_camera_pose,
+                );
+            }
+
             if frame_data
                 .input_system
                 .keyboard
