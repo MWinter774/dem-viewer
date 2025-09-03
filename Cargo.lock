@@ -283,6 +283,7 @@ dependencies = [
  "image",
  "nalgebra-glm",
  "opencv",
+ "rand 0.8.5",
  "serde",
  "serde_json",
  "tiff",

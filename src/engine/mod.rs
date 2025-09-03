@@ -7,7 +7,6 @@ use input_system::InputSystem;
 use models::Terrain;
 use renderers::TerrainRenderer;
 use scene::Scene;
-use scene_initializer_for_presentation::SceneInitializerForPresentation;
 use window::Window;
 
 mod camera;
@@ -20,9 +19,9 @@ mod glfw_context;
 mod input_system;
 mod models;
 mod opengl;
+mod presentation;
 mod renderers;
 mod scene;
-mod scene_initializer_for_presentation;
 mod shader_programs;
 mod transformations;
 mod utils;

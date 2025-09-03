@@ -1,9 +1,6 @@
 use nalgebra_glm as glm;
 
-use crate::engine::{
-    self, camera_view, feature_matching,
-    scene_initializer_for_presentation::SceneInitializerForPresentation, transformations::view,
-};
+use crate::engine::{self, camera_view, feature_matching, transformations::view};
 
 pub struct Engine {
     context: engine::EngineContext,
@@ -39,7 +36,7 @@ impl Engine {
 
         let is_presenting = true;
         if is_presenting {
-            engine::SceneInitializerForPresentation::initialize(&mut scene);
+            engine::presentation::SceneInitializerForPresentation::initialize(&mut scene);
         }
 
         let mut pixel_data: Vec<u8> = Vec::new();
@@ -89,7 +86,7 @@ impl Engine {
                 .keyboard
                 .is_key_pressed(glfw::Key::M)
             {
-                SceneInitializerForPresentation::save_to_file(
+                engine::presentation::SceneInitializerForPresentation::save_to_file(
                     &pixel_data,
                     &picked_points,
                     &real_camera_pose,
