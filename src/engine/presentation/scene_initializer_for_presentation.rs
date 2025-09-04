@@ -16,6 +16,11 @@ impl SceneInitializerForPresentation {
             ) = engine::presentation::ViewDataDeserializer::deserial_view_data_json_file(
                 file.unwrap().path().to_str().unwrap(),
             );
+            scene.set_image_points(deserialized_picked_points);
+            scene.add_view_to_feature_matching(
+                &deserialized_pixel_data,
+                &deserialized_real_camera_pose,
+            );
         }
     }
 
