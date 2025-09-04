@@ -9,7 +9,11 @@ pub struct SceneInitializerForPresentation {}
 impl SceneInitializerForPresentation {
     pub fn initialize(scene: &mut engine::Scene) {
         for file in fs::read_dir("./presentations").unwrap() {
-            engine::presentation::ViewDataDeserializer::deserial_view_data_json_file(
+            let (
+                deserialized_pixel_data,
+                deserialized_picked_points,
+                deserialized_real_camera_pose,
+            ) = engine::presentation::ViewDataDeserializer::deserial_view_data_json_file(
                 file.unwrap().path().to_str().unwrap(),
             );
         }
@@ -41,18 +45,5 @@ impl SceneInitializerForPresentation {
         fs::create_dir_all("./presentations").expect("Error creating ./presentations/!");
         fs::write(full_filename.clone(), view_data_json)
             .expect(&format!("Error writing to {}!", full_filename));
-
-        let (desiralized_pixel_data, desiralized_picked_points, desiralized_real_camera_pose) =
-            engine::presentation::ViewDataDeserializer::deserial_view_data_json_file(
-                &full_filename,
-            );
-
-        println!("Check desiralization...");
-        for i in 0..pixel_data.len() {
-            if pixel_data[i] != desiralized_pixel_data[i] {
-                panic!("Bug in desrialization!");
-            }
-        }
-        println!("Done check serialization! Everything is working!");
     }
 }

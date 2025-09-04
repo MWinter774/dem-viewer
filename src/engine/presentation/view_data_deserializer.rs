@@ -1,6 +1,7 @@
 use crate::engine;
 use nalgebra_glm as glm;
-use serde_json::{Result, Value};
+use opencv::core;
+use serde_json::Value;
 use std::{fs, io::BufReader};
 
 pub struct ViewDataDeserializer {}
@@ -28,7 +29,30 @@ impl ViewDataDeserializer {
 
     fn desearialize_picked_points(v: &Value) -> Vec<engine::epnp::EPnPPicturePoint> {
         let mut picked_points: Vec<engine::epnp::EPnPPicturePoint> = Vec::new();
-        for v in v.as_array().unwrap() {}
+        for v in v.as_array().unwrap() {
+            let id = v["id"].as_i64().unwrap() as u8;
+            let point = core::Point::new(
+                v["point"][0].as_i64().unwrap() as i32,
+                v["point"][1].as_i64().unwrap() as i32,
+            );
+            let opencv_color = glm::DVec3::new(
+                v["opencv_color"][0].as_f64().unwrap(),
+                v["opencv_color"][1].as_f64().unwrap(),
+                v["opencv_color"][2].as_f64().unwrap(),
+            );
+            let opengl_color = glm::Vec3::new(
+                v["opengl_color"][0].as_f64().unwrap() as f32,
+                v["opengl_color"][1].as_f64().unwrap() as f32,
+                v["opengl_color"][2].as_f64().unwrap() as f32,
+            );
+            let epnp_picture_point = engine::epnp::EPnPPicturePoint {
+                point,
+                id,
+                opencv_color,
+                opengl_color,
+            };
+            picked_points.push(epnp_picture_point);
+        }
         picked_points
     }
 
