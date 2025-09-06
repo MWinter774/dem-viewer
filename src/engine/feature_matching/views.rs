@@ -14,12 +14,14 @@ impl Views {
         &mut self,
         pixel_data: &Vec<u8>,
         picked_points: &Vec<engine::epnp::EPnPPicturePoint>,
+        real_world_points: &Vec<engine::epnp::EPnPRealWorldPoint>,
         real_camera_position: &glm::Vec3,
         window_height: usize,
     ) {
         self.views.push(feature_matching::View::new(
             pixel_data,
             picked_points,
+            real_world_points,
             real_camera_position,
             window_height,
         ));

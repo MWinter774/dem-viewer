@@ -5,6 +5,7 @@ use opencv::{core, features2d, prelude::*};
 pub struct View {
     pixel_data: Vec<u8>,
     picked_points: Vec<engine::epnp::EPnPPicturePoint>,
+    real_world_points: Vec<engine::epnp::EPnPRealWorldPoint>,
     real_camera_position: glm::Vec3,
     estimated_camera_position: glm::Vec3,
     descriptors: core::Mat,
@@ -16,6 +17,7 @@ impl View {
     pub fn new(
         pixel_data: &Vec<u8>,
         picked_points: &Vec<engine::epnp::EPnPPicturePoint>,
+        real_world_points: &Vec<engine::epnp::EPnPRealWorldPoint>,
         real_camera_position: &glm::Vec3,
         window_height: usize,
     ) -> View {
@@ -25,6 +27,7 @@ impl View {
         View {
             pixel_data,
             picked_points: picked_points.clone(),
+            real_world_points: real_world_points.clone(),
             real_camera_position: real_camera_position.clone(),
             estimated_camera_position: glm::vec3(0.0, 0.0, 0.0),
             descriptors,
@@ -63,6 +66,10 @@ impl View {
 
     pub fn get_picked_points(&self) -> &Vec<engine::epnp::EPnPPicturePoint> {
         &self.picked_points
+    }
+
+    pub fn get_real_world_points(&self) -> &Vec<engine::epnp::EPnPRealWorldPoint> {
+        &self.real_world_points
     }
 
     fn pixels_to_image(pixels: &mut Vec<u8>, window_height: usize) -> Mat {

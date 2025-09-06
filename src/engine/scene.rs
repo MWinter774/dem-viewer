@@ -191,7 +191,7 @@ impl Scene {
         real_camera_position: &glm::Vec3,
     ) {
         self.feature_matcher
-            .add_view(pixel_data, picked_points, real_camera_position);
+            .add_view(pixel_data, picked_points, &Vec::new(), real_camera_position);
     }
 
     pub fn update_estimated_camera_position_for_feature_matching(
@@ -206,10 +206,18 @@ impl Scene {
         self.feature_matcher.get_num_views()
     }
 
-    pub fn feature_match(&mut self, pixel_data: &Vec<u8>) -> Result<&glm::Vec3, &str> {
-        match self.feature_matcher.feature_match(&mut pixel_data.clone()) {
-            Ok(view) => Ok(view.get_real_camera_position()),
-            Err(err) => Err(err),
-        }
+    pub fn estimate_camera_position_using_feature_match(
+        &mut self,
+        pixel_data: &Vec<u8>,
+        camera: &engine::Camera,
+    ) -> Result<glm::Vec3, &str> {
+        let (estimated_picked_points, matching_view) =
+            self.feature_matcher.estimate_picked_points(pixel_data)?;
+
+        self.epnp_manager.set_image_points(estimated_picked_points);
+        self.epnp_manager
+            .set_real_world_points(matching_view.get_real_world_points().clone());
+        self.epnp_manager
+            .compute_camera_pose(camera.get_projection_matrix_object())
     }
 }
