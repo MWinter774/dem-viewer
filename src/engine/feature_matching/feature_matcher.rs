@@ -1,4 +1,4 @@
-use crate::engine::feature_matching;
+use crate::engine::{self, feature_matching};
 use nalgebra_glm as glm;
 use opencv::{
     core::{self, no_array},
@@ -34,9 +34,18 @@ impl FeatureMatcher {
         }
     }
 
-    pub fn add_view(&mut self, pixel_data: &Vec<u8>, real_camera_position: &glm::Vec3) {
-        self.views
-            .new_view(pixel_data, real_camera_position, self.window_height);
+    pub fn add_view(
+        &mut self,
+        pixel_data: &Vec<u8>,
+        picked_points: &Vec<engine::epnp::EPnPPicturePoint>,
+        real_camera_position: &glm::Vec3,
+    ) {
+        self.views.new_view(
+            pixel_data,
+            picked_points,
+            real_camera_position,
+            self.window_height,
+        );
     }
 
     pub fn update_estimated_camera_position(&mut self, estimated_camera_position: &glm::Vec3) {
@@ -80,13 +89,6 @@ impl FeatureMatcher {
                 max_matches = matches;
             }
         }
-        Self::draw_matches(
-            &img,
-            matching_view.get_img(),
-            &keypoints,
-            matching_view.get_keypoints(),
-            &max_matches,
-        );
         Ok(matching_view)
     }
 

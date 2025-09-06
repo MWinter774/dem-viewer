@@ -76,7 +76,11 @@ impl Engine {
                     real_camera_pose = self.camera.get_position().clone();
 
                     // Add the new view to the views system
-                    scene.add_view_to_feature_matching(&pixel_data, &real_camera_pose);
+                    scene.add_view_to_feature_matching(
+                        &pixel_data,
+                        &picked_points,
+                        &real_camera_pose,
+                    );
                 }
             }
 

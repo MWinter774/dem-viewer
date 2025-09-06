@@ -19,6 +19,7 @@ impl SceneInitializerForPresentation {
             scene.set_image_points(deserialized_picked_points);
             scene.add_view_to_feature_matching(
                 &deserialized_pixel_data,
+                todo!("Serialize & Deserialize picked_points"),
                 &deserialized_real_camera_pose,
             );
         }

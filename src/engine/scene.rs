@@ -187,10 +187,11 @@ impl Scene {
     pub fn add_view_to_feature_matching(
         &mut self,
         pixel_data: &Vec<u8>,
+        picked_points: &Vec<engine::epnp::EPnPPicturePoint>,
         real_camera_position: &glm::Vec3,
     ) {
         self.feature_matcher
-            .add_view(pixel_data, real_camera_position);
+            .add_view(pixel_data, picked_points, real_camera_position);
     }
 
     pub fn update_estimated_camera_position_for_feature_matching(

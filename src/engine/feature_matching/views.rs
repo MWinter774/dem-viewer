@@ -1,4 +1,4 @@
-use crate::engine::feature_matching;
+use crate::engine::{self, feature_matching};
 use nalgebra_glm as glm;
 
 pub struct Views {
@@ -13,11 +13,13 @@ impl Views {
     pub fn new_view(
         &mut self,
         pixel_data: &Vec<u8>,
+        picked_points: &Vec<engine::epnp::EPnPPicturePoint>,
         real_camera_position: &glm::Vec3,
         window_height: usize,
     ) {
         self.views.push(feature_matching::View::new(
             pixel_data,
+            picked_points,
             real_camera_position,
             window_height,
         ));

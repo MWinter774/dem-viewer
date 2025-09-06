@@ -1,8 +1,10 @@
+use crate::engine;
 use nalgebra_glm as glm;
 use opencv::{core, features2d, prelude::*};
 
 pub struct View {
     pixel_data: Vec<u8>,
+    picked_points: Vec<engine::epnp::EPnPPicturePoint>,
     real_camera_position: glm::Vec3,
     estimated_camera_position: glm::Vec3,
     descriptors: core::Mat,
@@ -13,6 +15,7 @@ pub struct View {
 impl View {
     pub fn new(
         pixel_data: &Vec<u8>,
+        picked_points: &Vec<engine::epnp::EPnPPicturePoint>,
         real_camera_position: &glm::Vec3,
         window_height: usize,
     ) -> View {
@@ -21,6 +24,7 @@ impl View {
             View::detect_descriptors(&mut pixel_data, window_height);
         View {
             pixel_data,
+            picked_points: picked_points.clone(),
             real_camera_position: real_camera_position.clone(),
             estimated_camera_position: glm::vec3(0.0, 0.0, 0.0),
             descriptors,
@@ -55,6 +59,10 @@ impl View {
 
     pub fn get_keypoints(&self) -> &core::Vector<core::KeyPoint> {
         &self.keypoints
+    }
+
+    pub fn get_picked_points(&self) -> &Vec<engine::epnp::EPnPPicturePoint> {
+        &self.picked_points
     }
 
     fn pixels_to_image(pixels: &mut Vec<u8>, window_height: usize) -> Mat {
