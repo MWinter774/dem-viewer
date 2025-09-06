@@ -1,13 +1,13 @@
 use nalgebra_glm as glm;
 use opencv::{core, features2d, prelude::*};
 
-use crate::engine::window;
-
 pub struct View {
     pixel_data: Vec<u8>,
     real_camera_position: glm::Vec3,
     estimated_camera_position: glm::Vec3,
     descriptors: core::Mat,
+    img: core::Mat,
+    keypoints: core::Vector<core::KeyPoint>,
 }
 
 impl View {
@@ -17,12 +17,15 @@ impl View {
         window_height: usize,
     ) -> View {
         let mut pixel_data = pixel_data.clone();
-        let descriptors = View::detect_descriptors(&mut pixel_data, window_height);
+        let (img, descriptors, keypoints) =
+            View::detect_descriptors(&mut pixel_data, window_height);
         View {
             pixel_data,
             real_camera_position: real_camera_position.clone(),
             estimated_camera_position: glm::vec3(0.0, 0.0, 0.0),
             descriptors,
+            img,
+            keypoints,
         }
     }
 
@@ -42,6 +45,18 @@ impl View {
         &self.estimated_camera_position
     }
 
+    pub fn get_pixel_data(&self) -> &Vec<u8> {
+        &self.pixel_data
+    }
+
+    pub fn get_img(&self) -> &core::Mat {
+        &self.img
+    }
+
+    pub fn get_keypoints(&self) -> &core::Vector<core::KeyPoint> {
+        &self.keypoints
+    }
+
     fn pixels_to_image(pixels: &mut Vec<u8>, window_height: usize) -> Mat {
         // Convert RGB to BGR (OpenCV expects BGR)
         for chunk in pixels.chunks_exact_mut(3) {
@@ -56,7 +71,10 @@ impl View {
         flipped
     }
 
-    fn detect_descriptors(pixel_data: &mut Vec<u8>, window_height: usize) -> core::Mat {
+    fn detect_descriptors(
+        pixel_data: &mut Vec<u8>,
+        window_height: usize,
+    ) -> (core::Mat, core::Mat, core::Vector<core::KeyPoint>) {
         let mut keypoints = core::Vector::new();
         let mut descriptors = core::Mat::default();
         let img = View::pixels_to_image(pixel_data, window_height);
@@ -81,6 +99,6 @@ impl View {
                 false,
             )
             .unwrap();
-        descriptors
+        (img, descriptors, keypoints)
     }
 }

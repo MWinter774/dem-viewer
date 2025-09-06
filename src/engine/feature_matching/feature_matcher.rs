@@ -1,8 +1,8 @@
-use crate::engine::feature_matching::{self, view};
+use crate::engine::feature_matching;
 use nalgebra_glm as glm;
 use opencv::{
     core::{self, no_array},
-    features2d, highgui,
+    features2d,
     prelude::*,
 };
 
@@ -10,6 +10,7 @@ pub struct FeatureMatcher {
     views: feature_matching::Views,
     _window_width: usize,
     window_height: usize,
+    detector: core::Ptr<features2d::ORB>,
 }
 
 impl FeatureMatcher {
@@ -18,6 +19,18 @@ impl FeatureMatcher {
             views: feature_matching::Views::new(),
             _window_width: window_width,
             window_height,
+            detector: features2d::ORB::create(
+                500,
+                1.2,
+                8,
+                31,
+                0,
+                2,
+                features2d::ORB_ScoreType::HARRIS_SCORE,
+                31,
+                20,
+            )
+            .unwrap(),
         }
     }
 
@@ -38,15 +51,19 @@ impl FeatureMatcher {
     // Returns either:
     // 1. The view that the feature matching algorithm found the closest to pixel_data
     // 2. Error if not enough view were picked
-    pub fn feature_match(&self, pixel_data: &mut Vec<u8>) -> Result<&feature_matching::View, &str> {
+    pub fn feature_match(
+        &mut self,
+        pixel_data: &mut Vec<u8>,
+    ) -> Result<&feature_matching::View, &str> {
         if self.views.get_num_views() == 0 {
             return Err("You must pick at least 1 view in order to perform feature matching!");
         }
-        let descriptors = self.detect_descriptors(pixel_data);
-        let mut max_matches = 0;
+        let (img, descriptors, keypoints) = self.detect_descriptors(pixel_data);
+        let mut max_matches_len = 0;
+        let mut max_matches = core::Vector::new();
         let mut matching_view = &self.views.get_views()[0];
+        let matcher = features2d::BFMatcher::new(opencv::core::NORM_HAMMING, true).unwrap();
         for view in self.views.get_views() {
-            let matcher = features2d::BFMatcher::new(opencv::core::NORM_HAMMING, true).unwrap();
             let mut matches = core::Vector::new();
             matcher
                 .train_match(
@@ -56,11 +73,20 @@ impl FeatureMatcher {
                     &no_array(),
                 )
                 .unwrap();
-            if matches.len() > max_matches {
-                max_matches = matches.len();
+
+            if matches.len() > max_matches_len {
+                max_matches_len = matches.len();
                 matching_view = view;
+                max_matches = matches;
             }
         }
+        Self::draw_matches(
+            &img,
+            matching_view.get_img(),
+            &keypoints,
+            matching_view.get_keypoints(),
+            &max_matches,
+        );
         Ok(matching_view)
     }
 
@@ -78,23 +104,14 @@ impl FeatureMatcher {
         flipped
     }
 
-    fn detect_descriptors(&self, pixel_data: &mut Vec<u8>) -> core::Mat {
+    fn detect_descriptors(
+        &mut self,
+        pixel_data: &mut Vec<u8>,
+    ) -> (core::Mat, core::Mat, core::Vector<core::KeyPoint>) {
         let mut keypoints = core::Vector::new();
         let mut descriptors = core::Mat::default();
         let img = self.pixels_to_image(pixel_data);
-        let mut detector = features2d::ORB::create(
-            500,
-            1.2,
-            8,
-            31,
-            0,
-            2,
-            features2d::ORB_ScoreType::HARRIS_SCORE,
-            31,
-            20,
-        )
-        .unwrap();
-        detector
+        self.detector
             .detect_and_compute(
                 &img,
                 &Mat::default(),
@@ -103,6 +120,38 @@ impl FeatureMatcher {
                 false,
             )
             .unwrap();
-        descriptors
+        (img, descriptors, keypoints)
+    }
+
+    fn draw_matches(
+        img1: &core::Mat,
+        img2: &core::Mat,
+        kps1: &core::Vector<core::KeyPoint>,
+        kps2: &core::Vector<core::KeyPoint>,
+        matches: &core::Vector<core::DMatch>,
+    ) {
+        let mut out = core::Mat::default();
+        let mask: core::Vector<i8> = core::Vector::new();
+        let mut good: core::Vector<core::DMatch> = core::Vector::new();
+        for m in matches {
+            if m.distance < 40.0 {
+                good.push(m);
+            }
+        }
+        features2d::draw_matches(
+            &img1,
+            &kps1,
+            &img2,
+            &kps2,
+            &good,
+            &mut out,
+            core::Scalar::all(-1.0),
+            core::Scalar::all(-1.0),
+            &mask,
+            features2d::DrawMatchesFlags::DEFAULT,
+        )
+        .unwrap();
+        opencv::highgui::imshow("BFMatcher Result", &out).unwrap();
+        opencv::highgui::wait_key(0).unwrap();
     }
 }

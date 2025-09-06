@@ -205,7 +205,7 @@ impl Scene {
         self.feature_matcher.get_num_views()
     }
 
-    pub fn feature_match(&self, pixel_data: &Vec<u8>) -> Result<&glm::Vec3, &str> {
+    pub fn feature_match(&mut self, pixel_data: &Vec<u8>) -> Result<&glm::Vec3, &str> {
         match self.feature_matcher.feature_match(&mut pixel_data.clone()) {
             Ok(view) => Ok(view.get_real_camera_position()),
             Err(err) => Err(err),
