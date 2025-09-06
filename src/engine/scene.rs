@@ -160,6 +160,12 @@ impl Scene {
     pub fn clear_real_world_points(&mut self) {
         self.epnp_manager.get_image_points_mut().clear();
     }
+    pub fn get_real_world_points(&self) -> &Vec<epnp::EPnPRealWorldPoint> {
+        self.epnp_manager.get_real_world_points()
+    }
+    pub fn set_real_world_points(&mut self, real_world_points: Vec<epnp::EPnPRealWorldPoint>) {
+        self.epnp_manager.set_real_world_points(real_world_points);
+    }
 
     pub fn compute_camera_pose(&self, camera: &engine::Camera) -> Result<glm::Vec3, &str> {
         self.epnp_manager
@@ -192,6 +198,20 @@ impl Scene {
     ) {
         self.feature_matcher
             .add_view(pixel_data, picked_points, &Vec::new(), real_camera_position);
+    }
+    pub fn add_defined_view_to_feature_matching(
+        &mut self,
+        pixel_data: &Vec<u8>,
+        picked_points: &Vec<engine::epnp::EPnPPicturePoint>,
+        real_world_points: &Vec<epnp::EPnPRealWorldPoint>,
+        real_camera_position: &glm::Vec3,
+    ) {
+        self.feature_matcher.add_view(
+            pixel_data,
+            picked_points,
+            real_world_points,
+            real_camera_position,
+        );
     }
 
     pub fn update_estimated_camera_position_for_feature_matching(

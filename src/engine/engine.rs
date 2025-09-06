@@ -90,11 +90,16 @@ impl Engine {
                 .keyboard
                 .is_key_pressed(glfw::Key::M)
             {
-                engine::presentation::SceneInitializerForPresentation::save_to_file(
-                    &pixel_data,
-                    &picked_points,
-                    &real_camera_pose,
-                );
+                if picking_phase {
+                    println!("Picking phase not yet finished!");
+                } else {
+                    engine::presentation::SceneInitializerForPresentation::save_to_file(
+                        &pixel_data,
+                        &picked_points,
+                        scene.get_real_world_points(),
+                        &real_camera_pose,
+                    );
+                }
             }
 
             if frame_data

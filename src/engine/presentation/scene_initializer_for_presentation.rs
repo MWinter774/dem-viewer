@@ -12,14 +12,15 @@ impl SceneInitializerForPresentation {
             let (
                 deserialized_pixel_data,
                 deserialized_picked_points,
+                deserialized_real_world_points,
                 deserialized_real_camera_pose,
             ) = engine::presentation::ViewDataDeserializer::deserial_view_data_json_file(
                 file.unwrap().path().to_str().unwrap(),
             );
-            scene.set_image_points(deserialized_picked_points.clone());
-            scene.add_view_to_feature_matching(
+            scene.add_defined_view_to_feature_matching(
                 &deserialized_pixel_data,
                 &deserialized_picked_points,
+                &deserialized_real_world_points,
                 &deserialized_real_camera_pose,
             );
         }
@@ -29,17 +30,25 @@ impl SceneInitializerForPresentation {
     pub fn save_to_file(
         pixel_data: &Vec<u8>,
         picked_points: &Vec<engine::epnp::EPnPPicturePoint>,
+        real_world_points: &Vec<engine::epnp::EPnPRealWorldPoint>,
         real_camera_pose: &glm::Vec3,
     ) {
         let pixel_data_serialized =
             engine::presentation::ViewDataSerializer::serialize_pixel_data(&pixel_data);
         let picked_points_serialized =
             engine::presentation::ViewDataSerializer::serialize_epnp_picture_points(&picked_points);
+        let real_world_points_serialized =
+            engine::presentation::ViewDataSerializer::serialize_epnp_real_world_points(
+                &real_world_points,
+            );
         let real_camera_pose_serialized =
             engine::presentation::ViewDataSerializer::serialize_glm_vec3(&real_camera_pose);
         let view_data_json = format!(
-            "{{\"pixel_data\":{},\"picked_points\":{},\"real_camera_pose\":{}}}",
-            pixel_data_serialized, picked_points_serialized, real_camera_pose_serialized
+            "{{\"pixel_data\":{},\"picked_points\":{},\"real_camera_pose\":{},\"real_world_points\":{}}}",
+            pixel_data_serialized,
+            picked_points_serialized,
+            real_camera_pose_serialized,
+            real_world_points_serialized
         );
 
         let random_filename: String = rand::thread_rng()

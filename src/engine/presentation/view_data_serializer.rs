@@ -39,4 +39,23 @@ impl ViewDataSerializer {
         s.push(']');
         s
     }
+
+    pub fn serialize_epnp_real_world_points(
+        real_world_points: &Vec<engine::epnp::EPnPRealWorldPoint>,
+    ) -> String {
+        let mut s = String::new();
+        s.push_str("[");
+        for point in real_world_points {
+            let color = Self::serialize_glm_vec3(&point.color);
+            let point_loc = Self::serialize_glm_vec3(&point.point);
+            let point_serialized = format!(
+                "{{\"color\":{color},\"point\":{point_loc},\"primitive_id\":{}}},",
+                point.primitive_id
+            );
+            s.push_str(&point_serialized);
+        }
+        s.remove(s.len() - 1);
+        s.push(']');
+        s
+    }
 }
