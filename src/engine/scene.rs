@@ -233,7 +233,9 @@ impl Scene {
     ) -> Result<glm::Vec3, &str> {
         let (estimated_picked_points, matching_view) =
             self.feature_matcher.estimate_picked_points(pixel_data)?;
-
+        if estimated_picked_points.len() != matching_view.get_real_world_points().len() {
+            return Err("Not enough data for feature matching");
+        }
         self.epnp_manager.set_image_points(estimated_picked_points);
         self.epnp_manager
             .set_real_world_points(matching_view.get_real_world_points().clone());

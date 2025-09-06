@@ -112,7 +112,18 @@ impl Engine {
                     let camera_position_result = scene
                         .estimate_camera_position_using_feature_match(&pixel_data, &self.camera);
                     match camera_position_result {
-                        Ok(pos) => println!("{pos}"),
+                        Ok(pos) => {
+                            let real_camera_pose = self.camera.get_position().clone();
+                            println!("Computed camera pose: ({}, {}, {})", pos.x, pos.y, pos.z);
+                            println!(
+                                "Real camera pose: ({}, {}, {})",
+                                real_camera_pose.x, real_camera_pose.y, real_camera_pose.z
+                            );
+                            println!(
+                                "Error: {}",
+                                glm::l2_norm(&(pos.normalize() - real_camera_pose.normalize()))
+                            );
+                        }
                         Err(e) => println!("{e}"),
                     }
                 } else {

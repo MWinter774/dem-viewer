@@ -196,7 +196,7 @@ impl FeatureMatcher {
         )
         .unwrap();
         if h.empty() {
-            return Ok((Vec::new(), matching_view));
+            return Err("Not enough data for feature matching");
         }
 
         let mut ref_pts_mat = Mat::zeros(ref_landmarks.len() as i32, 1, opencv::core::CV_32FC2)
