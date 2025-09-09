@@ -9,13 +9,17 @@ pub struct SceneInitializerForPresentation {}
 impl SceneInitializerForPresentation {
     pub fn initialize(scene: &mut engine::Scene) {
         for file in fs::read_dir("./presentations").unwrap() {
+            let file = file.unwrap();
+            if file.file_type().unwrap().is_dir() {
+                continue;
+            }
             let (
                 deserialized_pixel_data,
                 deserialized_picked_points,
                 deserialized_real_world_points,
                 deserialized_real_camera_pose,
             ) = engine::presentation::ViewDataDeserializer::deserial_view_data_json_file(
-                file.unwrap().path().to_str().unwrap(),
+                file.path().to_str().unwrap(),
             );
             scene.add_defined_view_to_feature_matching(
                 &deserialized_pixel_data,
