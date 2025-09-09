@@ -23,4 +23,8 @@ impl<'a> Keyboard<'a> {
     pub fn is_key_pressed(&self, key: glfw::Key) -> bool {
         self.keyboard_press_detector.is_key_pressed(key)
     }
+
+    pub fn is_key_held(&self, key: glfw::Key) -> bool {
+        self.glfw_window.get_key(key) == glfw::Action::Press
+    }
 }

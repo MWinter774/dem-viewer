@@ -59,6 +59,16 @@ impl Engine {
             if frame_data
                 .input_system
                 .keyboard
+                .is_key_held(glfw::Key::LeftControl)
+            {
+                self.camera.set_speed(15.0);
+            } else {
+                self.camera.set_speed(5.0);
+            }
+
+            if frame_data
+                .input_system
+                .keyboard
                 .is_key_pressed(glfw::Key::P)
             {
                 // If user didn't finish to pick for a view

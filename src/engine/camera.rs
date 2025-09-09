@@ -53,6 +53,10 @@ impl Camera {
         }
     }
 
+    pub fn set_speed(&mut self, speed: f32) {
+        self.step_size = speed;
+    }
+
     fn update_view_matrix(&mut self) {
         self.view_matrix =
             transformations::View::new(&self.position, &(self.position + self.front), &self.up);
